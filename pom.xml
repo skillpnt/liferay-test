@@ -10,6 +10,7 @@
     <module>modules</module>
     <module>themes</module>
     <module>shop</module>
+    <module>shop-crud-portlet</module>
   </modules>
   <properties>
     <liferay.repository.url>https://repository-cdn.liferay.com/nexus/content/groups/public/</liferay.repository.url>
