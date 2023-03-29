@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/liferay-test.iml" filepath="$PROJECT_DIR$/liferay-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/liferay-test-modules.iml" filepath="$PROJECT_DIR$/modules/liferay-test-modules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/themes/liferay-test-themes.iml" filepath="$PROJECT_DIR$/themes/liferay-test-themes.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shop/shop.iml" filepath="$PROJECT_DIR$/shop/shop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shop/shop-api/shop-api.iml" filepath="$PROJECT_DIR$/shop/shop-api/shop-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shop/shop-service/shop-service.iml" filepath="$PROJECT_DIR$/shop/shop-service/shop-service.iml" />
+    </modules>
+  </component>
+</project>

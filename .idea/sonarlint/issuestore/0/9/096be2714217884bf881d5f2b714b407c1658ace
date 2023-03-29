@@ -1,0 +1,21 @@
+
+n
+java:S1104¶"PMake uuid a static final constant or non-public and provide accessors if needed.(°ĞÄ¤8‡å³Äò0
+w
+java:S1104·"YMake electronicsId a static final constant or non-public and provide accessors if needed.(Í§Ë8‡å³Äò0
+n
+java:S1104¸"PMake name a static final constant or non-public and provide accessors if needed.( şÍ¾8ˆå³Äò0
+u
+java:S1104¹"RMake typeId a static final constant or non-public and provide accessors if needed.(âÕ®šÿÿÿÿÿ8ˆå³Äò0
+t
+java:S1104º"QMake price a static final constant or non-public and provide accessors if needed.(×ß–Öùÿÿÿÿ8ˆå³Äò0
+t
+java:S1104»"QMake count a static final constant or non-public and provide accessors if needed.(†Í˜Åıÿÿÿÿ8ˆå³Äò0
+q
+java:S1104¼"SMake inStock a static final constant or non-public and provide accessors if needed.(äÅ£§8ˆå³Äò0
+r
+java:S1104½"TMake archived a static final constant or non-public and provide accessors if needed.(ˆÜùÍ8ˆå³Äò0
+s
+java:S1104¾"WMake description a static final constant or non-public and provide accessors if needed.(¹ÿ†ğÿÿÿÿÿ
+\
+java:S11262"AReplace this if-then-else statement by a single return statement.(°Åüÿÿÿÿ

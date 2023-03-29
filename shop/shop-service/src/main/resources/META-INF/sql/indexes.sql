@@ -1,0 +1,1 @@
+create index IX_31FF6413 on shop_Purchase (purchaseDate);

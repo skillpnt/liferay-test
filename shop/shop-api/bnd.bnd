@@ -1,0 +1,12 @@
+Bundle-Name: shop-api
+Bundle-SymbolicName: shop.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	shop.exception,\
+	shop.model,\
+	shop.service,\
+	shop.service.persistence
+-check: EXPORTS
+-consumer-policy: ${replacestring;${range;[==,==]};.*,(.*)];$1}
+-includeresource: META-INF/service.xml=../shop-service/service.xml
+-provider-policy: ${replacestring;${range;[==,==]};.*,(.*)];$1}

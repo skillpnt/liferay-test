@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.3.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_3_0.dtd">
+
+<service-builder dependency-injector="ds" package-path="shop">
+	<namespace>shop</namespace>
+
+	<!--<entity data-source="sampleDataSource" local-service="true" name="Foo" remote-service="false" session-factory="sampleSessionFactory" table="foo" tx-manager="sampleTransactionManager uuid="true"">-->
+	<entity name="Electronics" local-service="true" remote-service="true" >
+
+		<column name="electronicsId" primary="true" type="long" />
+
+		<column name="name" type="String" />
+		<column name="typeId" type="long" />
+		<column name="price" type="long" />
+		<column name="count" type="int" />
+		<column name="inStock" type="boolean" />
+		<column name="archived" type="boolean" />
+		<column name="description" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+	</entity>
+
+	<entity name="Employee" local-service="true" remote-service="true" >
+
+		<column name="employeeId" type="long" primary="true" />
+
+		<column name="lastName" type="String" />
+		<column name="firstName" type="String" />
+		<column name="patronymic" type="String" />
+		<column name="birthdate" type="Date" />
+		<column name="positionId" type="long" />
+		<column name="gender" type="boolean" />
+
+	</entity>
+
+	<entity name="Purchase" local-service="true" remote-service="true" >
+
+		<column name="purchaseId" type="long" primary="true" />
+
+		<column name="electronicsId" type="long" />
+		<column name="employeeId" type="long" />
+		<column name="purchaseDate" type="Date" />
+		<column name="purchaseTypeId" type="long" />
+
+		<finder name="Date" return-type="Collection">
+			<finder-column name="purchaseDate" />
+		</finder>
+
+	</entity>
+
+	<entity name="ElectronicsEmployee" local-service="true" remote-service="true">
+
+		<column name="employeeId" type="long" primary="true" />
+		<column name="electronicsTypeId" type="long" primary="true" />
+
+	</entity>
+
+	<entity name="PositionType" local-service="true" remote-service="true" >
+
+		<column name="positionId" primary="true" type="long" />
+
+		<column name="name" type="String" />
+
+	</entity>
+
+	<entity name="ElectronicsType" local-service="true" remote-service="true" >
+
+		<column name="electronicsTypeId" primary="true" type="long" />
+
+		<column name="name" type="String" />
+
+	</entity>
+
+	<entity name="purchaseType" local-service="true" remote-service="true" >
+
+		<column name="purchaseTypeId" primary="true" type="long" />
+
+		<column name="name" type="String" />
+
+	</entity>
+
+</service-builder>
