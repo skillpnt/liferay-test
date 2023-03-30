@@ -83,7 +83,7 @@ public class PositionTypeModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table shop_PositionType (positionId LONG not null primary key,name VARCHAR(75) null)";
+		"create table shop_PositionType (positionId LONG not null primary key,name VARCHAR(100) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table shop_PositionType";
 

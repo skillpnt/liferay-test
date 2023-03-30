@@ -91,7 +91,7 @@ public class EmployeeModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table shop_Employee (employeeId LONG not null primary key,lastName VARCHAR(75) null,firstName VARCHAR(75) null,patronymic VARCHAR(75) null,birthdate DATE null,positionId LONG,gender BOOLEAN)";
+		"create table shop_Employee (employeeId LONG not null primary key,lastName VARCHAR(100) null,firstName VARCHAR(100) null,patronymic VARCHAR(100) null,birthdate DATE null,positionId LONG,gender BOOLEAN)";
 
 	public static final String TABLE_SQL_DROP = "drop table shop_Employee";
 

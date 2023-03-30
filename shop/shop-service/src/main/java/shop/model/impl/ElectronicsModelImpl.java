@@ -92,7 +92,7 @@ public class ElectronicsModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table shop_Electronics (electronicsId LONG not null primary key,name VARCHAR(75) null,typeId LONG,price LONG,count INTEGER,inStock BOOLEAN,archived BOOLEAN,description VARCHAR(75) null)";
+		"create table shop_Electronics (electronicsId LONG not null primary key,name VARCHAR(150) null,typeId LONG,price LONG,count INTEGER,inStock BOOLEAN,archived BOOLEAN,description TEXT null)";
 
 	public static final String TABLE_SQL_DROP = "drop table shop_Electronics";
 

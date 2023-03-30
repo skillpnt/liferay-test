@@ -3,13 +3,17 @@
 <model-hints>
 	<model name="shop.model.Electronics">
 		<field name="electronicsId" type="long" />
-		<field name="name" type="String" />
+		<field name="name" type="String">
+			<hint name="max-length">150</hint>
+		</field>
 		<field name="typeId" type="long" />
 		<field name="price" type="long" />
 		<field name="count" type="int" />
 		<field name="inStock" type="boolean" />
 		<field name="archived" type="boolean" />
-		<field name="description" type="String" />
+		<field name="description" type="String">
+			<hint name="max-length">5000</hint>
+		</field>
 	</model>
 	<model name="shop.model.ElectronicsEmployee">
 		<field name="employeeId" type="long" />
@@ -17,20 +21,30 @@
 	</model>
 	<model name="shop.model.ElectronicsType">
 		<field name="electronicsTypeId" type="long" />
-		<field name="name" type="String" />
+		<field name="name" type="String">
+			<hint name="max-length">100</hint>
+		</field>
 	</model>
 	<model name="shop.model.Employee">
 		<field name="employeeId" type="long" />
-		<field name="lastName" type="String" />
-		<field name="firstName" type="String" />
-		<field name="patronymic" type="String" />
+		<field name="lastName" type="String">
+			<hint name="max-length">100</hint>
+		</field>
+		<field name="firstName" type="String">
+			<hint name="max-length">100</hint>
+		</field>
+		<field name="patronymic" type="String">
+			<hint name="max-length">100</hint>
+		</field>
 		<field name="birthdate" type="Date" />
 		<field name="positionId" type="long" />
 		<field name="gender" type="boolean" />
 	</model>
 	<model name="shop.model.PositionType">
 		<field name="positionId" type="long" />
-		<field name="name" type="String" />
+		<field name="name" type="String">
+			<hint name="max-length">100</hint>
+		</field>
 	</model>
 	<model name="shop.model.Purchase">
 		<field name="purchaseId" type="long" />
@@ -41,6 +55,8 @@
 	</model>
 	<model name="shop.model.purchaseType">
 		<field name="purchaseTypeId" type="long" />
-		<field name="name" type="String" />
+		<field name="name" type="String">
+			<hint name="max-length">100</hint>
+		</field>
 	</model>
 </model-hints>
