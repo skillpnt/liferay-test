@@ -16,7 +16,6 @@ import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 import javax.portlet.ProcessAction;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 

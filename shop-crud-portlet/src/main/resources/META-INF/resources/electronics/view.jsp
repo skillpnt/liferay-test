@@ -15,7 +15,7 @@
 <div class="mb-5">
     <p>Electronics</p>
     <a href="<%= addElectronicsRenderURL %>" class="btn  btn-primary btn-default">
-        <i class="glyphicon glyphicon-plus"></i> Add Electronics
+        Add Electronics
     </a>
 </div>
 
@@ -46,6 +46,8 @@
         <liferay-ui:search-container-column-text property="typeId" name="Type Id"/>
         <liferay-ui:search-container-column-text property="price" name="Price"/>
         <liferay-ui:search-container-column-text property="count" name="Count"/>
+        <liferay-ui:search-container-column-text property="inStock" name="In Stock"/>
+        <liferay-ui:search-container-column-text property="archived" name="Archived"/>
         <liferay-ui:search-container-column-text property="description" name="Description"/>
 
         <liferay-ui:search-container-column-text>

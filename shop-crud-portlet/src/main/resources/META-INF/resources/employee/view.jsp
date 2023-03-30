@@ -15,7 +15,7 @@
 <div class="mb-5">
     <p>Employees</p>
     <a href="<%= addEmployeeRenderURL %>" class="btn  btn-primary btn-default">
-        <i class="glyphicon glyphicon-plus"></i> Add Employee
+        Add Employee
     </a>
 </div>
 

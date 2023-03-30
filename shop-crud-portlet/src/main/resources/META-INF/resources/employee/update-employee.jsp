@@ -7,7 +7,7 @@
 
 <%
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    String gender = ParamUtil.getString(renderRequest, "positionId");
+    String gender = ParamUtil.getString(renderRequest, "gender");
 %>
 
 <p><h1>Update employee</h1></p>
