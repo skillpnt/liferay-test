@@ -1,12 +1,21 @@
 package shop.crud.portlet.portlet;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import org.osgi.service.component.annotations.Reference;
 import shop.crud.portlet.constants.ShopPortletKeys;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
+import javax.portlet.ProcessAction;
 
 import org.osgi.service.component.annotations.Component;
+import shop.model.Electronics;
+import shop.service.ElectronicsLocalService;
+import shop.service.ElectronicsLocalServiceUtil;
 
 /**
  * @author skllp
@@ -27,4 +36,5 @@ import org.osgi.service.component.annotations.Component;
 	service = Portlet.class
 )
 public class ShopPortlet extends MVCPortlet {
+
 }
