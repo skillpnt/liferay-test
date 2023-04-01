@@ -1,6 +1,8 @@
 package shop.crud.portlet.portlet;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.osgi.service.component.annotations.Reference;
@@ -42,11 +44,14 @@ public class ElectronicsPortlet extends MVCPortlet {
 
     @ProcessAction(name="addElectronics")
     public void addElectronics(ActionRequest actionRequest, ActionResponse actionResponse) {
+        if (!validateFields(actionRequest)) {
+            return;
+        }
+
         String name = ParamUtil.getString(actionRequest, "name");
         long typeId = ParamUtil.getLong(actionRequest, "typeId");
         long price = ParamUtil.getLong(actionRequest, "price");
         int count = ParamUtil.getInteger(actionRequest, "count");
-        boolean inStock = ParamUtil.getBoolean(actionRequest, "inStock");
         boolean archived = ParamUtil.getBoolean(actionRequest, "archived");
         String description = ParamUtil.getString(actionRequest, "description");
 
@@ -56,25 +61,29 @@ public class ElectronicsPortlet extends MVCPortlet {
         electronics.setTypeId(typeId);
         electronics.setPrice(price);
         electronics.setCount(count);
-        electronics.setInStock(inStock);
+        electronics.setInStock(count > 0);
         electronics.setArchived(archived);
         electronics.setDescription(description);
 
         try {
             ElectronicsLocalServiceUtil.addElectronics(electronics);
+            SessionMessages.add(actionRequest, "electronicsAdded");
         } catch (Exception e) {
-            actionRequest.setAttribute("errorMessage", e.getMessage());
+            SessionErrors.add(actionRequest, e.getClass().getName());
         }
     }
 
     @ProcessAction(name = "updateElectronics")
     public void updateElectronics(ActionRequest actionRequest, ActionResponse actionResponse) {
+        if (!validateFields(actionRequest)) {
+            return;
+        }
+
         long id = ParamUtil.getLong(actionRequest, "id");
         String name = ParamUtil.getString(actionRequest, "name");
         long typeId = ParamUtil.getLong(actionRequest, "typeId");
         long price = ParamUtil.getLong(actionRequest, "price");
         int count = ParamUtil.getInteger(actionRequest, "count");
-        boolean inStock = ParamUtil.getBoolean(actionRequest, "inStock");
         boolean archived = ParamUtil.getBoolean(actionRequest, "archived");
         String description = ParamUtil.getString(actionRequest, "description");
 
@@ -82,18 +91,23 @@ public class ElectronicsPortlet extends MVCPortlet {
         try {
             electronics = electronicsLocalService.getElectronics(id);
         } catch (Exception e) {
-            System.err.println(e.getCause() + e.getMessage());
+            SessionErrors.add(actionRequest, e.getClass().getName());
         }
 
-        if(Validator.isNotNull(electronics)) {
+        if (Validator.isNotNull(electronics)) {
             electronics.setName(name);
             electronics.setTypeId(typeId);
             electronics.setPrice(price);
             electronics.setCount(count);
-            electronics.setInStock(inStock);
+            electronics.setInStock(count > 0);
             electronics.setArchived(archived);
             electronics.setDescription(description);
-            electronicsLocalService.updateElectronics(electronics);
+            try {
+                electronicsLocalService.updateElectronics(electronics);
+                SessionMessages.add(actionRequest, "electronicsUpdated");
+            } catch (Exception e) {
+                SessionErrors.add(actionRequest, e.getClass().getName());
+            }
         }
     }
 
@@ -102,9 +116,44 @@ public class ElectronicsPortlet extends MVCPortlet {
         long id = ParamUtil.getLong(actionRequest, "id");
         try {
             electronicsLocalService.deleteElectronics(id);
+            SessionMessages.add(actionRequest, "electronicsDeleted");
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            SessionErrors.add(actionRequest, e.getClass().getName());
         }
     }
 
+    private boolean validateFields(ActionRequest actionRequest) {
+        String name = ParamUtil.getString(actionRequest, "name");
+        long typeId = ParamUtil.getLong(actionRequest, "typeId");
+        long price = ParamUtil.getLong(actionRequest, "price");
+        int count = ParamUtil.getInteger(actionRequest, "count");
+        boolean archived = ParamUtil.getBoolean(actionRequest, "archived");
+        String description = ParamUtil.getString(actionRequest, "description");
+
+        if (Validator.isNull(name) ||
+                Validator.isNull(typeId) ||
+                Validator.isNull(price) ||
+                Validator.isNull(count) ||
+                Validator.isNull(description)) {
+            SessionErrors.add(actionRequest, "emptyField");
+            return false;
+        }
+
+        if (name.length() > 100) {
+            SessionErrors.add(actionRequest, "nameTooLong");
+            return false;
+        }
+
+        if (description.length() > 5000) {
+            SessionErrors.add(actionRequest, "descriptionTooLong");
+            return false;
+        }
+
+        if (archived && count > 0) {
+            SessionErrors.add(actionRequest, "electronicsArchivedAndInStock");
+            return false;
+        }
+
+        return true;
+    }
 }

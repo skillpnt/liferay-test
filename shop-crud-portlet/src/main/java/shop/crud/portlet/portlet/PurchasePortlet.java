@@ -1,6 +1,9 @@
 package shop.crud.portlet.portlet;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.osgi.service.component.annotations.Reference;
@@ -15,11 +18,16 @@ import javax.portlet.ProcessAction;
 
 import org.osgi.service.component.annotations.Component;
 import shop.model.Electronics;
+import shop.model.ElectronicsEmployee;
 import shop.model.Purchase;
 import shop.service.*;
+import shop.service.persistence.ElectronicsEmployeePK;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author skllp
@@ -43,27 +51,46 @@ public class PurchasePortlet extends MVCPortlet {
 
         @Reference
         PurchaseLocalService purchaseLocalService;
-
         @Reference
         ElectronicsLocalService electronicsLocalService;
+        @Reference
+        ElectronicsEmployeeLocalService electronicsEmployeeLocalService;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         @ProcessAction(name = "addPurchase")
         public void addPurchase(ActionRequest actionRequest, ActionResponse actionResponse) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
                 long electronicsId = ParamUtil.getLong(actionRequest, "electronicsId");
                 long employeeId = ParamUtil.getLong(actionRequest, "employeeId");
                 Date purchaseDate = ParamUtil.getDate(actionRequest, "purchaseDate", dateFormat);
                 long purchaseTypeId = ParamUtil.getLong(actionRequest, "purchaseTypeId");
 
+                if (Validator.isNull(electronicsId) || Validator.isNull(employeeId) || Validator.isNull(purchaseDate) || Validator.isNull(purchaseTypeId)) {
+                        SessionErrors.add(actionRequest, "emptyField");
+                        return;
+                }
+
+                try {
+                        electronicsEmployeeLocalService.getElectronicsEmployee(new ElectronicsEmployeePK(employeeId, electronicsId));
+                } catch (PortalException e) {
+                        SessionErrors.add(actionRequest, "employeeNoElectronicsType");
+                        return;
+                }
+
+                if (purchaseDate.after(new Date())) {
+                        SessionErrors.add(actionRequest, "purchaseWrongDate");
+                        return;
+                }
+
                 Electronics electronics = null;
                 try {
                         electronics = electronicsLocalService.getElectronics(electronicsId);
                 } catch (Exception e) {
-                        System.err.println(e.getCause() + e.getMessage());
+                        SessionErrors.add(actionRequest, e.getClass().getName());
                 }
 
-                if (electronics.getCount() > 0) {
+                if (Validator.isNotNull(electronics) && electronics.getCount() > 0) {
                         Purchase purchase = purchaseLocalService.createPurchase(CounterLocalServiceUtil.increment());
 
                         purchase.setElectronicsId(electronicsId);
@@ -71,27 +98,25 @@ public class PurchasePortlet extends MVCPortlet {
                         purchase.setPurchaseDate(purchaseDate);
                         purchase.setPurchaseTypeId(purchaseTypeId);
 
-                        try {
-                                PurchaseLocalServiceUtil.addPurchase(purchase);
-                        } catch (Exception e) {
-                                actionRequest.setAttribute("errorMessage", e.getMessage());
+                        electronics.setCount(electronics.getCount() - 1);
+                        electronicsLocalService.updateElectronics(electronics);
+                        if (electronics.getCount() < 1) {
+                                electronics.setInStock(false);
                         }
 
-                        if (Validator.isNotNull(electronics)) {
-                                electronics.setCount(electronics.getCount() - 1);
-                                if (electronics.getCount() <= 1) {
-                                        electronics.setInStock(false);
-                                }
-                                electronicsLocalService.updateElectronics(electronics);
+                        try {
+                                PurchaseLocalServiceUtil.addPurchase(purchase);
+                                SessionMessages.add(actionRequest, "purchaseAdded");
+                        } catch (Exception e) {
+                                SessionErrors.add(actionRequest, e.getClass().getName());
                         }
                 } else {
-                        actionRequest.setAttribute("errorMessage", "Not enough items in stock!");
+                        SessionErrors.add(actionRequest, "notEnoughElectronics");
                 }
         }
 
         @ProcessAction(name = "updatePurchase")
         public void updatePurchase(ActionRequest actionRequest, ActionResponse actionResponse) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
                 long id = ParamUtil.getLong(actionRequest, "id");
                 long electronicsId = ParamUtil.getLong(actionRequest, "electronicsId");
@@ -103,7 +128,14 @@ public class PurchasePortlet extends MVCPortlet {
                 try {
                         purchase = purchaseLocalService.getPurchase(id);
                 } catch (Exception e) {
-                        System.err.println(e.getCause() + e.getMessage());
+                        SessionErrors.add(actionRequest, e.getClass().getName());
+                }
+
+                try {
+                        electronicsEmployeeLocalService.getElectronicsEmployee(new ElectronicsEmployeePK(employeeId, electronicsId));
+                } catch (PortalException e) {
+                        SessionErrors.add(actionRequest, "employeeNoElectronicsType");
+                        return;
                 }
 
                 if(Validator.isNotNull(purchase)) {
@@ -111,7 +143,12 @@ public class PurchasePortlet extends MVCPortlet {
                         purchase.setEmployeeId(employeeId);
                         purchase.setPurchaseDate(purchaseDate);
                         purchase.setPurchaseTypeId(purchaseTypeId);
-                        purchaseLocalService.updatePurchase(purchase);
+                        try {
+                                purchaseLocalService.updatePurchase(purchase);
+                                SessionMessages.add(actionRequest, "purchaseUpdated");
+                        } catch (Exception e) {
+                                SessionErrors.add(actionRequest, e.getClass().getName());
+                        }
                 }
         }
 
@@ -120,8 +157,9 @@ public class PurchasePortlet extends MVCPortlet {
                 long id = ParamUtil.getLong(actionRequest, "id");
                 try {
                         purchaseLocalService.deletePurchase(id);
+                        SessionMessages.add(actionRequest, "purchaseDeleted");
                 } catch (Exception e) {
-                        System.err.println(e.getMessage());
+                        SessionErrors.add(actionRequest, e.getClass().getName());
                 }
         }
 }

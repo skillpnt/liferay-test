@@ -12,7 +12,6 @@
     <aui:input name="typeId" required="true" type="number" value='<%= ParamUtil.getLong(renderRequest, "typeId") %>'/>
     <aui:input name="price" required="true" type="number" value='<%= ParamUtil.getLong(renderRequest, "price") %>'/>
     <aui:input name="count" required="true" type="number" value='<%= ParamUtil.getInteger(renderRequest, "count") %>'/>
-    <aui:input name="inStock" type="checkbox" value='<%= ParamUtil.getBoolean(renderRequest, "inStock") %>'/>
     <aui:input name="archived" type="checkbox" value='<%= ParamUtil.getBoolean(renderRequest, "archived") %>'/>
     <aui:input name="description" required="true" type="text" value='<%= ParamUtil.getString(renderRequest, "description") %>'/>
     <aui:button-row>

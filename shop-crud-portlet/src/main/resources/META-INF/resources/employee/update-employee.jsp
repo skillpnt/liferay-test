@@ -1,13 +1,19 @@
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="shop.model.ElectronicsType" %>
+<%@ page import="java.util.List" %>
+<%@ page import="shop.service.ElectronicsTypeLocalServiceUtil" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.ZoneId" %>
 <%@ include file="../init.jsp" %>
 <portlet:defineObjects/>
 
 <liferay-portlet:actionURL name="updateEmployee" var="updateEmployeeActionURL"/>
 
 <%
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     String gender = ParamUtil.getString(renderRequest, "gender");
+    List<ElectronicsType> options = ElectronicsTypeLocalServiceUtil.getElectronicsTypes(-1, -1);
 %>
 
 <p><h1>Update employee</h1></p>
@@ -22,6 +28,14 @@
         <aui:option value="false" selected='<%=gender.equalsIgnoreCase("false")%>'>Male</aui:option>
         <aui:option value="true" selected='<%=gender.equalsIgnoreCase("true")%>'>Female</aui:option>
     </aui:select>
+
+    <label>Electronics types</label>
+    <%
+        for (ElectronicsType option : options) {
+    %>
+    <aui:input type="checkbox" name="<%= option.getName() %>" value="<%= option.getElectronicsTypeId() %>" />
+    <% } %>
+
     <aui:button-row>
         <aui:button type="submit" value="Update" name="update"/>
     </aui:button-row>

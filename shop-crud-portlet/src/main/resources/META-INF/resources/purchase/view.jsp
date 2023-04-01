@@ -2,6 +2,13 @@
 <%@ page import="shop.service.PurchaseLocalServiceUtil" %>
 <%@ include file="../init.jsp" %>
 <portlet:defineObjects />
+<liferay-ui:success key="purchaseDeleted" message="purchase-deleted" />
+<liferay-ui:success key="purchaseAdded" message="purchase-added" />
+<liferay-ui:success key="purchaseUpdated" message="purchase-updated" />
+<liferay-ui:error key="notEnoughElectronics" message="electronics-not-enough" />
+<liferay-ui:error key="emptyField" message="field-empty" />
+<liferay-ui:error key="purchaseWrongDate" message="purchase-wrong-date" />
+<liferay-ui:error key="employeeNoElectronicsType" message="employee-no-electronics-type" />
 
 <%
     PortletURL purchaseItrUrl = renderResponse.createRenderURL();

@@ -1,6 +1,16 @@
 <%@ page import="javax.portlet.PortletURL" %>
 <%@ page import="shop.service.ElectronicsLocalServiceUtil" %>
+<%@ page import="shop.model.ElectronicsType" %>
+<%@ page import="shop.service.ElectronicsTypeLocalServiceUtil" %>
+<%@ page import="com.liferay.portal.kernel.exception.PortalException" %>
 <%@ include file="../init.jsp" %>
+<liferay-ui:success key="electronicsDeleted" message="electronics-deleted" />
+<liferay-ui:success key="electronicsAdded" message="electronics-added" />
+<liferay-ui:success key="electronicsUpdated" message="electronics-updated" />
+<liferay-ui:error key="electronicsArchivedAndInStock" message="electronics-archived-in-stock" />
+<liferay-ui:error key="emptyField" message="field-empty" />
+<liferay-ui:error key="nameTooLong" message="electronics-name-too-long" />
+<liferay-ui:error key="descriptionTooLong" message="electronics-description-too-long" />
 <portlet:defineObjects />
 
 <%
@@ -42,8 +52,16 @@
             <portlet:param name="id" value="${electronics.electronicsId}"/>
         </portlet:actionURL>
 
+        <%
+            String typeName = null;
+            try {
+                typeName = ElectronicsTypeLocalServiceUtil.getElectronicsType(electronics.getTypeId()).getName();
+            } catch (PortalException e) {
+                typeName = "Error";
+            }
+        %>
         <liferay-ui:search-container-column-text property="name" name="Electronics Name" href="${rowURL}"/>
-        <liferay-ui:search-container-column-text property="typeId" name="Type Id"/>
+        <liferay-ui:search-container-column-text value="<%= typeName %>" name="Type"/>
         <liferay-ui:search-container-column-text property="price" name="Price"/>
         <liferay-ui:search-container-column-text property="count" name="Count"/>
         <liferay-ui:search-container-column-text property="inStock" name="In Stock"/>

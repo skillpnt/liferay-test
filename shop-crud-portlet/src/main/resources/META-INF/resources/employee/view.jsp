@@ -1,7 +1,19 @@
 <%@ page import="javax.portlet.PortletURL" %>
 <%@ page import="shop.service.EmployeeLocalServiceUtil" %>
+<%@ page import="shop.service.PositionTypeLocalServiceUtil" %>
+<%@ page import="com.liferay.portal.kernel.exception.PortalException" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ include file="../init.jsp" %>
 <portlet:defineObjects />
+<liferay-ui:success key="employeeDeleted" message="employee-deleted" />
+<liferay-ui:success key="employeeAdded" message="employee-added" />
+<liferay-ui:success key="employeeUpdated" message="employee-updated" />
+<liferay-ui:error key="emptyField" message="field-empty" />
+<liferay-ui:error key="employeeWrongDate" message="employee-wrong-date" />
+<liferay-ui:error key="firstnameTooLong" message="employee-firstname-too-long" />
+<liferay-ui:error key="lastnameTooLong" message="employee-lastname-too-long" />
+<liferay-ui:error key="patronymicTooLong" message="employee-patronymic-too-long" />
 
 <%
     PortletURL employeeItrUrl = renderResponse.createRenderURL();
@@ -24,6 +36,23 @@
     </liferay-ui:search-container-results>
 
     <liferay-ui:search-container-row className="shop.model.Employee" modelVar="employee" keyProperty="employeeId" >
+        <%
+            String positionTypeName = null;
+            try {
+                positionTypeName = PositionTypeLocalServiceUtil.getPositionType(employee.getPositionId()).getName();
+            } catch (PortalException e) {
+                positionTypeName = "Error";
+            }
+
+            String tmpGender = "";
+            if (employee.getGender()) tmpGender = "Female";
+            else tmpGender = "Male";
+
+            Date tmpBirthdate = employee.getBirthdate();
+            String displayDate = new SimpleDateFormat("dd-MM-yyyy").format(tmpBirthdate);
+            String stringDate = new SimpleDateFormat("yyyy-MM-dd").format(tmpBirthdate);
+        %>
+
         <portlet:renderURL var="rowURL">
             <portlet:param name="employeeId" value="${employee.employeeId}" />
         </portlet:renderURL>
@@ -33,7 +62,7 @@
             <portlet:param name="employee_lastname" value="${employee.lastName}"/>
             <portlet:param name="employee_firstname" value="${employee.firstName}"/>
             <portlet:param name="patronymic" value="${employee.patronymic}"/>
-            <portlet:param name="birthdate" value="${employee.birthdate}"/>
+            <portlet:param name="birthdate" value="<%= stringDate %>"/>
             <portlet:param name="positionId" value="${employee.positionId}"/>
             <portlet:param name="gender" value="${employee.gender}"/>
         </portlet:renderURL>
@@ -44,9 +73,9 @@
         <liferay-ui:search-container-column-text property="firstName" name="Firstname"/>
         <liferay-ui:search-container-column-text property="lastName" name="Lastname"/>
         <liferay-ui:search-container-column-text property="patronymic" name="Patronymic"/>
-        <liferay-ui:search-container-column-text property="birthdate" name="Birthdate" />
-        <liferay-ui:search-container-column-text property="positionId" name="Position id"/>
-        <liferay-ui:search-container-column-text property="gender" name="Gender"/>
+        <liferay-ui:search-container-column-text value="<%= displayDate %>" name="Birthdate" />
+        <liferay-ui:search-container-column-text value="<%= positionTypeName %>" name="Position"/>
+        <liferay-ui:search-container-column-text value="<%= tmpGender %>" name="Gender"/>
 
         <liferay-ui:search-container-column-text>
             <a href="<%= updateEmployeeRenderURL %>"
