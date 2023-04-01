@@ -72,7 +72,9 @@ public class PurchasePortlet extends MVCPortlet {
                 }
 
                 try {
-                        electronicsEmployeeLocalService.getElectronicsEmployee(new ElectronicsEmployeePK(employeeId, electronicsId));
+                        Electronics tmpElectronics = electronicsLocalService.getElectronics(electronicsId);
+                        long electronicsType = tmpElectronics.getTypeId();
+                        electronicsEmployeeLocalService.getElectronicsEmployee(new ElectronicsEmployeePK(employeeId, electronicsType));
                 } catch (PortalException e) {
                         SessionErrors.add(actionRequest, "employeeNoElectronicsType");
                         return;
@@ -132,7 +134,9 @@ public class PurchasePortlet extends MVCPortlet {
                 }
 
                 try {
-                        electronicsEmployeeLocalService.getElectronicsEmployee(new ElectronicsEmployeePK(employeeId, electronicsId));
+                        Electronics tmpElectronics = electronicsLocalService.getElectronics(electronicsId);
+                        long electronicsType = tmpElectronics.getTypeId();
+                        electronicsEmployeeLocalService.getElectronicsEmployee(new ElectronicsEmployeePK(employeeId, electronicsType));
                 } catch (PortalException e) {
                         SessionErrors.add(actionRequest, "employeeNoElectronicsType");
                         return;

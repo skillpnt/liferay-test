@@ -16,4 +16,7 @@ public class ShopPortletKeys {
 
 	public static final String PURCHASE =
 			"shop_crud_portlet_PurchasePortlet";
+
+	public static final String UPLOAD_FOLDER =
+			"Uploaded files";
 }

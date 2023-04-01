@@ -39,7 +39,7 @@
         <% } %>
     </aui:select>
 
-    <aui:input name="purchasedate" type="hidden"/>
+    <aui:input name="purchaseDate" type="date" label="Purchase Date"/>
 
     <aui:button-row>
         <aui:button name="submitButton" type="submit" value="Submit" />

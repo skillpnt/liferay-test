@@ -1,7 +1,17 @@
 <%@ page import="javax.portlet.PortletURL" %>
+<%@ page import="org.apache.commons.beanutils.BeanComparator"%>
 <%@ page import="shop.service.PurchaseLocalServiceUtil" %>
+<%@ page import="com.liferay.portal.kernel.util.ParamUtil" %>
+<%@ page import="com.liferay.portal.kernel.util.Validator" %>
+<%@ page import="shop.model.Purchase" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collections" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.liferay.portal.kernel.util.ListUtil" %>
+<%@ page import="shop.crud.portlet.portlet.PurchaseDateComparator" %>
 <%@ include file="../init.jsp" %>
 <portlet:defineObjects />
+<theme:defineObjects />
 <liferay-ui:success key="purchaseDeleted" message="purchase-deleted" />
 <liferay-ui:success key="purchaseAdded" message="purchase-added" />
 <liferay-ui:success key="purchaseUpdated" message="purchase-updated" />
@@ -13,6 +23,15 @@
 <%
     PortletURL purchaseItrUrl = renderResponse.createRenderURL();
     purchaseItrUrl.setParameter("mvcPath", "/purchase/view.jsp");
+
+    String orderByCol = ParamUtil.getString(request, "orderByCol");
+    String orderByType = ParamUtil.getString(request, "orderByType");
+    String sortingOrder = orderByType;
+
+    if(orderByType.equals("desc")) orderByType = "asc";
+    else orderByType = "desc";
+
+    if(Validator.isNull(orderByType)) orderByType = "desc";
 %>
 
 <liferay-portlet:renderURL var="addPurchaseRenderURL">
@@ -26,8 +45,22 @@
     </a>
 </div>
 
-<liferay-ui:search-container emptyResultsMessage="purchases-not-found" iteratorURL="<%= purchaseItrUrl %>" >
-    <liferay-ui:search-container-results results="<%= PurchaseLocalServiceUtil.getPurchases(searchContainer.getStart(), searchContainer.getEnd()) %>" >
+<liferay-ui:search-container emptyResultsMessage="purchases-not-found" iteratorURL="<%= purchaseItrUrl %>">
+    <liferay-ui:search-container-results>
+    <%
+        String sortByType = ParamUtil.getString(request, "orderByType");
+        List<Purchase> purchaseList = PurchaseLocalServiceUtil.getPurchases(-1, -1);
+        List<Purchase> sortableList = new ArrayList<>(ListUtil.subList(purchaseList, searchContainer.getStart(), searchContainer.getEnd()));
+
+        if (sortByType.equalsIgnoreCase("asc")) {
+            Collections.sort(sortableList, new PurchaseDateComparator());
+        } else {
+            Collections.sort(sortableList, Collections.reverseOrder(new PurchaseDateComparator()));
+        }
+
+        results.clear();
+        results.addAll(sortableList);
+    %>
     </liferay-ui:search-container-results>
 
     <liferay-ui:search-container-row className="shop.model.Purchase" modelVar="purchase" keyProperty="purchaseId" >
@@ -39,7 +72,7 @@
             <portlet:param name="id" value="${purchase.purchaseId}"/>
             <portlet:param name="electronicsId" value="${purchase.electronicsId}"/>
             <portlet:param name="employeeId" value="${purchase.employeeId}"/>
-            <portlet:param name="purchaseDate" value="${purchase.purchaseDate}"/>
+            <portlet:param name="purchaseDate" value="${purchase.purchaseDate}" />
             <portlet:param name="purchaseTypeId" value="${purchase.purchaseTypeId}"/>
         </portlet:renderURL>
         <portlet:actionURL name="deletePurchase" var="deletePurchaseActionURL">
@@ -48,8 +81,8 @@
 
         <liferay-ui:search-container-column-text property="electronicsId" name="Electronics Id"/>
         <liferay-ui:search-container-column-text property="employeeId" name="Employee Id"/>
-        <liferay-ui:search-container-column-text property="purchaseDate" name="Purchase Date"/>
-        <liferay-ui:search-container-column-text property="purchaseTypeId" name="Purchase Type Id" />
+        <liferay-ui:search-container-column-date property="purchaseDate" name="Purchase Date" orderable="<%= true %>" orderableProperty="purchaseDate" />
+        <liferay-ui:search-container-column-text property="purchaseTypeId" name="Purchase Type Id"/>
 
         <liferay-ui:search-container-column-text>
             <a href="<%= updatePurchaseRenderURL %>"

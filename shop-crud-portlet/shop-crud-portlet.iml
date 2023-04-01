@@ -13,5 +13,8 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.liferay.portal:release.portal.api:7.3.5-ga6" level="project" />
     <orderEntry type="module" module-name="shop-api" />
     <orderEntry type="module" module-name="shop-service" />
+    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.4" level="project" />
+    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
   </component>
 </module>
