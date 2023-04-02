@@ -1,16 +1,8 @@
 package shop.crud.portlet.portlet;
 
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.document.library.kernel.model.DLFolderConstants;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.util.portlet.PortletProps;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.osgi.service.component.annotations.Reference;
 import shop.crud.portlet.constants.ShopPortletKeys;
 
@@ -24,11 +16,9 @@ import shop.service.*;
 import shop.service.persistence.ElectronicsEmployeePK;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -89,14 +79,15 @@ public class ShopPortlet extends MVCPortlet {
 			 ZipInputStream stream = new ZipInputStream(bis)) {
 
 			ZipEntry entry;
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
 			while ((entry = stream.getNextEntry()) != null) {
 
-				List<Map<String, String>> records = new ArrayList<>();
 				String fileName = entry.getName();
 
 				if (fileName.endsWith(".csv")) {
-					BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+					List<Map<String, String>> records = new ArrayList<>();
+
 					String[] headers = null;
 					String line;
 					while ((line = reader.readLine()) != null) {
@@ -111,42 +102,42 @@ public class ShopPortlet extends MVCPortlet {
 							records.add(item);
 						}
 					}
-					reader.close();
-				}
 
-				switch (fileName) {
-					case "shop_electronics.csv": {
-						records.forEach(item -> addElectronics(actionRequest, item));
-						break;
+					switch (fileName) {
+						case "shop_electronics.csv": {
+							records.forEach(item -> addElectronics(actionRequest, item));
+							break;
+						}
+						case "shop_electronicsemployee.csv": {
+							records.forEach(item -> addElectronicsEmployee(actionRequest, item));
+							break;
+						}
+						case "shop_electronicstype.csv": {
+							records.forEach(item -> addElectronicsType(actionRequest, item));
+							break;
+						}
+						case "shop_employee.csv": {
+							records.forEach(item -> addEmployee(actionRequest, item));
+							break;
+						}
+						case "shop_positiontype.csv": {
+							records.forEach(item -> addPositionType(actionRequest, item));
+							break;
+						}
+						case "shop_purchase.csv": {
+							records.forEach(item -> addPurchase(actionRequest, item));
+							break;
+						}
+						case "shop_purchasetype.csv": {
+							records.forEach(item -> addPurchaseType(actionRequest, item));
+							break;
+						}
+						default:
+							break;
 					}
-					case "shop_electronicsemployee.csv": {
-						records.forEach(item -> addElectronicsEmployee(actionRequest, item));
-						break;
-					}
-					case "shop_electronicstype.csv": {
-						records.forEach(item -> addElectronicsType(actionRequest, item));
-						break;
-					}
-					case "shop_employee.csv": {
-						records.forEach(item -> addEmployee(actionRequest, item));
-						break;
-					}
-					case "shop_positiontype.csv": {
-						records.forEach(item -> addPositionType(actionRequest, item));
-						break;
-					}
-					case "shop_purchase.csv": {
-						records.forEach(item -> addPurchase(actionRequest, item));
-						break;
-					}
-					case "shop_purchasetype.csv": {
-						records.forEach(item -> addPurchaseType(actionRequest, item));
-						break;
-					}
-					default:
-						break;
 				}
 			}
+			reader.close();
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
@@ -229,8 +220,8 @@ public class ShopPortlet extends MVCPortlet {
 
 		purchase.setElectronicsId(Long.parseLong(item.get("electronicsid")));
 		purchase.setEmployeeId(Long.parseLong(item.get("employeeid")));
-		LocalDateTime date = LocalDateTime.parse(item.get("purchasedate"));
-		purchase.setPurchaseDate(java.sql.Timestamp.valueOf(date));
+		Timestamp date = Timestamp.valueOf(item.get("purchasedate"));
+		purchase.setPurchaseDate(date);
 		purchase.setPurchaseTypeId(Long.parseLong(item.get("purchasetypeid")));
 
 		try {
