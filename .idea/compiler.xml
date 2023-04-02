@@ -9,9 +9,11 @@
         <module name="shop-service" />
         <module name="shop-api" />
         <module name="shop-crud-portlet" />
+        <module name="business-card-portlet" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="business-card-portlet" target="1.8" />
       <module name="liferay-test" target="1.5" />
       <module name="liferay-test-modules" target="1.5" />
       <module name="liferay-test-themes" target="1.5" />

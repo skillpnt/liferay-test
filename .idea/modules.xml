@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/business-card-portlet/business-card-portlet.iml" filepath="$PROJECT_DIR$/business-card-portlet/business-card-portlet.iml" />
       <module fileurl="file://$PROJECT_DIR$/liferay-test.iml" filepath="$PROJECT_DIR$/liferay-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/liferay-test-modules.iml" filepath="$PROJECT_DIR$/modules/liferay-test-modules.iml" />
       <module fileurl="file://$PROJECT_DIR$/themes/liferay-test-themes.iml" filepath="$PROJECT_DIR$/themes/liferay-test-themes.iml" />

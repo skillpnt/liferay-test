@@ -69,9 +69,6 @@ public class ShopPortlet extends MVCPortlet {
 		}
 
 		//TODO: удалить печать в консоль, добавить сообщения об ошибках
-		System.out.println("Size: " + uploadRequest.getSize("fileName"));
-		System.out.println("File name: " + uploadRequest.getFileName("fileName"));
-
 		File file = uploadRequest.getFile("fileName");
 
 		try (FileInputStream fis = new FileInputStream(file);
