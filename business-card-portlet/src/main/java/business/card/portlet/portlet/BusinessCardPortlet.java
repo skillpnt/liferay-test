@@ -55,8 +55,12 @@ public class BusinessCardPortlet extends MVCPortlet {
 	public void getBestEmployees(RenderRequest renderRequest) {
 		List<Employee> employees = employeeLocalService.getEmployees(-1, -1);
 		List<Purchase> purchases = purchaseLocalService.getPurchases(-1, -1);
+
 		Map<Long, Long> employeesEarnings = new HashMap<>();
 		Map<Long, Employee> bestEmployees = new HashMap<>();
+
+		Map<Long, Integer> employeesPurchasesCount = new HashMap<>();
+		Map<Long, Employee> bestEmployeesByPurchasesCount = new HashMap<>();
 
 		employees.forEach(employee -> {
 			long sum = purchases.stream()
@@ -70,20 +74,38 @@ public class BusinessCardPortlet extends MVCPortlet {
 					})
 					.sum();
 
+			List<Purchase> employeePurchases = purchases.stream()
+					.filter(purchase -> purchase.getEmployeeId() == employee.getEmployeeId())
+					.collect(Collectors.toList());
+
+			int totalPurchases = employeePurchases.size();
+			employeesPurchasesCount.merge(employee.getEmployeeId(), totalPurchases, Integer::sum);
+
 			employeesEarnings.put(employee.getEmployeeId(), sum);
 
 			if (!bestEmployees.containsKey(employee.getPositionId())) {
 				bestEmployees.put(employee.getPositionId(), employee);
-			}
-			else {
+			} else {
 				if (employeesEarnings.get(employee.getEmployeeId()) >
 						employeesEarnings.get(bestEmployees.get(employee.getPositionId()).getEmployeeId()))
 					bestEmployees.put(employee.getPositionId(), employee);
+			}
+
+			if (!bestEmployeesByPurchasesCount.containsKey(employee.getEmployeeId())) {
+				bestEmployeesByPurchasesCount.put(employee.getPositionId(), employee);
+			} else {
+				if (employeesPurchasesCount.get(employee.getEmployeeId()) >=
+						employeesPurchasesCount.get(bestEmployeesByPurchasesCount.get(employee.getEmployeeId()))) {
+					bestEmployeesByPurchasesCount.put(employee.getPositionId(), employee);
+				}
 			}
 		});
 
 		renderRequest.setAttribute("bestEmployees", bestEmployees);
 		renderRequest.setAttribute("employeesEarnings", employeesEarnings);
+
+		renderRequest.setAttribute("bestEmployeesByCount", bestEmployeesByPurchasesCount);
+		renderRequest.setAttribute("bestEmployeesCount", employeesPurchasesCount);
 		getShopProfit(renderRequest, employeesEarnings);
 	}
 
