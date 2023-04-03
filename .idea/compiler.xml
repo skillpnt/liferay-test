@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="shop-service" />
+        <module name="shop-rest" />
         <module name="shop-api" />
         <module name="shop-crud-portlet" />
         <module name="business-card-portlet" />
@@ -22,6 +23,7 @@
       <module name="shop" target="1.8" />
       <module name="shop-api" target="1.8" />
       <module name="shop-crud-portlet" target="1.8" />
+      <module name="shop-rest" target="1.8" />
       <module name="shop-service" target="1.8" />
       <module name="untitled" target="1.8" />
     </bytecodeTargetLevel>

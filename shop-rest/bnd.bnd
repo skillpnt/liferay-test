@@ -1,0 +1,8 @@
+Bundle-Name: shop-rest
+Bundle-SymbolicName: shop.rest
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration
+-consumer-policy: ${replacestring;${range;[==,==]};.*,(.*)];$1}
+-metatype: *
+-plugin.metatype: com.liferay.ant.bnd.metatype.MetatypePlugin
+-provider-policy: ${replacestring;${range;[==,==]};.*,(.*)];$1}
