@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.json.JSONSerializer;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
+import shop.exception.NoSuchElectronicsException;
 import shop.exception.NoSuchEmployeeException;
 import shop.model.Electronics;
 import shop.model.ElectronicsModel;
@@ -118,5 +119,34 @@ public class ShopRestApplication extends Application {
 		} catch (Exception e) {
 			return Response.serverError().build();
 		}
+	}
+
+	@GET
+	@Path("/electronics/{id}")
+	@Produces("application/json")
+	public Response getElectronics(@PathParam("id") long id) {
+		Electronics electronics = null;
+		try {
+			electronics = electronicsLocalService.getElectronics(id);
+		} catch (NoSuchElectronicsException e) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		} catch (Exception e) {
+			return Response.serverError().build();
+		}
+
+		JSONObject json = JSONFactoryUtil.createJSONObject();
+		json.put("electronicsId", electronics.getElectronicsId());
+		json.put("name", electronics.getName());
+		json.put("typeId", electronics.getTypeId());
+		json.put("price", electronics.getPrice());
+		json.put("count", electronics.getCount());
+		json.put("inStock", electronics.getInStock());
+		json.put("archived", electronics.getArchived());
+		json.put("description", electronics.getDescription());
+
+		JSONSerializer serializer = JSONFactoryUtil.createJSONSerializer();
+		String jsonString = serializer.serialize(json);
+
+		return Response.ok(jsonString).build();
 	}
 }
