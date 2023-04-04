@@ -21,7 +21,7 @@
 %>
 
 <liferay-portlet:renderURL var="addEmployeeRenderURL">
-    <liferay-portlet:param name="mvcPath" value="/employee/add-employee.jsp"/>
+    <liferay-portlet:param name="mvcPath" value="/employee/update-employee.jsp"/>
 </liferay-portlet:renderURL>
 
 <div class="mb-5">
@@ -50,21 +50,11 @@
 
             Date tmpBirthdate = employee.getBirthdate();
             String displayDate = new SimpleDateFormat("dd-MM-yyyy").format(tmpBirthdate);
-            String stringDate = new SimpleDateFormat("yyyy-MM-dd").format(tmpBirthdate);
         %>
 
-        <portlet:renderURL var="rowURL">
-            <portlet:param name="employeeId" value="${employee.employeeId}" />
-        </portlet:renderURL>
         <portlet:renderURL var="updateEmployeeRenderURL">
             <portlet:param name="mvcPath" value="/employee/update-employee.jsp"/>
             <portlet:param name="id" value="${employee.employeeId}"/>
-            <portlet:param name="employee_lastname" value="${employee.lastName}"/>
-            <portlet:param name="employee_firstname" value="${employee.firstName}"/>
-            <portlet:param name="patronymic" value="${employee.patronymic}"/>
-            <portlet:param name="birthdate" value="<%= stringDate %>"/>
-            <portlet:param name="positionId" value="${employee.positionId}"/>
-            <portlet:param name="gender" value="${employee.gender}"/>
         </portlet:renderURL>
         <portlet:actionURL name="deleteEmployee" var="deleteEmployeeActionURL">
             <portlet:param name="id" value="${employee.employeeId}"/>

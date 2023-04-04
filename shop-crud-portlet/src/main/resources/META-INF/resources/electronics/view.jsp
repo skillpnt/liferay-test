@@ -11,6 +11,7 @@
 <liferay-ui:error key="emptyField" message="field-empty" />
 <liferay-ui:error key="nameTooLong" message="electronics-name-too-long" />
 <liferay-ui:error key="descriptionTooLong" message="electronics-description-too-long" />
+<liferay-ui:error key="electronicsDoesNotExist" message="electronics-does-not-exist" />
 <portlet:defineObjects />
 
 <%
@@ -19,7 +20,7 @@
 %>
 
 <liferay-portlet:renderURL var="addElectronicsRenderURL" >
-    <liferay-portlet:param name="mvcPath" value="/electronics/add-electronics.jsp"/>
+    <liferay-portlet:param name="mvcPath" value="/electronics/update-electronics.jsp"/>
 </liferay-portlet:renderURL>
 
 <div class="mb-5">
@@ -40,13 +41,6 @@
         <portlet:renderURL var="updateElectronicsRenderURL">
             <portlet:param name="mvcPath" value="/electronics/update-electronics.jsp"/>
             <portlet:param name="id" value="${electronics.electronicsId}"/>
-            <portlet:param name="name" value="${electronics.name}"/>
-            <portlet:param name="typeId" value="${electronics.typeId}"/>
-            <portlet:param name="price" value="${electronics.price}"/>
-            <portlet:param name="count" value="${electronics.count}"/>
-            <portlet:param name="inStock" value="${electronics.inStock}"/>
-            <portlet:param name="archived" value="${electronics.archived}"/>
-            <portlet:param name="description" value="${electronics.description}"/>
         </portlet:renderURL>
         <portlet:actionURL name="deleteElectronics" var="deleteElectronicsActionURL">
             <portlet:param name="id" value="${electronics.electronicsId}"/>

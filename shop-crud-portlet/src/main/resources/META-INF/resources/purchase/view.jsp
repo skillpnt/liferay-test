@@ -35,7 +35,7 @@
 %>
 
 <liferay-portlet:renderURL var="addPurchaseRenderURL">
-    <liferay-portlet:param name="mvcPath" value="/purchase/add-purchase.jsp"/>
+    <liferay-portlet:param name="mvcPath" value="/purchase/update-purchase.jsp"/>
 </liferay-portlet:renderURL>
 
 <div class="mb-5">
@@ -64,16 +64,9 @@
     </liferay-ui:search-container-results>
 
     <liferay-ui:search-container-row className="shop.model.Purchase" modelVar="purchase" keyProperty="purchaseId" >
-        <portlet:renderURL var="rowURL">
-            <portlet:param name="purchaseId" value="${purchase.purchaseId}" />
-        </portlet:renderURL>
         <portlet:renderURL var="updatePurchaseRenderURL">
             <portlet:param name="mvcPath" value="/purchase/update-purchase.jsp"/>
             <portlet:param name="id" value="${purchase.purchaseId}"/>
-            <portlet:param name="electronicsId" value="${purchase.electronicsId}"/>
-            <portlet:param name="employeeId" value="${purchase.employeeId}"/>
-            <portlet:param name="purchaseDate" value="${purchase.purchaseDate}" />
-            <portlet:param name="purchaseTypeId" value="${purchase.purchaseTypeId}"/>
         </portlet:renderURL>
         <portlet:actionURL name="deletePurchase" var="deletePurchaseActionURL">
             <portlet:param name="id" value="${purchase.purchaseId}"/>
