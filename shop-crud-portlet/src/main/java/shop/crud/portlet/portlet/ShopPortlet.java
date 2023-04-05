@@ -1,5 +1,6 @@
 package shop.crud.portlet.portlet;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -64,11 +65,15 @@ public class ShopPortlet extends MVCPortlet {
 		UploadPortletRequest uploadRequest = PortalUtil.getUploadPortletRequest(actionRequest);
 
 		if (uploadRequest.getSize("fileName")==0) {
-			SessionErrors.add(actionRequest, "error");
+			SessionErrors.add(actionRequest, "fileUploadError");
 			return;
 		}
 
-		//TODO: удалить печать в консоль, добавить сообщения об ошибках
+		if (!uploadRequest.getFileName("fileName").endsWith(".zip")) {
+			SessionErrors.add(actionRequest, "fileWrongFormat");
+			return;
+		}
+
 		File file = uploadRequest.getFile("fileName");
 
 		try (FileInputStream fis = new FileInputStream(file);
@@ -137,12 +142,19 @@ public class ShopPortlet extends MVCPortlet {
 			reader.close();
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
+			SessionErrors.add(actionRequest, "errorReadingZip", e.getMessage());
 		}
 	}
 
 	public void addElectronics(ActionRequest actionRequest, Map<String, String> item) {
 
-		Electronics electronics = electronicsLocalService.createElectronics(Long.parseLong(item.get("electronicsid")));
+		Electronics electronics = null;
+
+		if (item.get("electronicsid") != null) {
+			electronics = electronicsLocalService.createElectronics(Long.parseLong(item.get("electronicsid")));
+		} else {
+			electronics = electronicsLocalService.createElectronics(CounterLocalServiceUtil.increment());
+		}
 
 		electronics.setName(item.get("name"));
 		electronics.setTypeId(Long.parseLong(item.get("typeid")));

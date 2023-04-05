@@ -20,20 +20,9 @@
 <liferay-ui:error key="purchaseWrongDate" message="purchase-wrong-date" />
 <liferay-ui:error key="employeeNoElectronicsType" message="employee-no-electronics-type" />
 
-<%
-    PortletURL purchaseItrUrl = renderResponse.createRenderURL();
-    purchaseItrUrl.setParameter("mvcPath", "/purchase/view.jsp");
-
-    String orderByCol = ParamUtil.getString(request, "orderByCol");
-    String orderByType = ParamUtil.getString(request, "orderByType");
-    String sortingOrder = orderByType;
-
-    if(orderByType.equals("desc")) orderByType = "asc";
-    else orderByType = "desc";
-
-    if(Validator.isNull(orderByType)) orderByType = "desc";
-%>
-
+<liferay-portlet:renderURL varImpl="iteratorURL" >
+    <liferay-portlet:param name="mvcPath" value="/purchase/view.jsp"/>
+</liferay-portlet:renderURL>
 <liferay-portlet:renderURL var="addPurchaseRenderURL">
     <liferay-portlet:param name="mvcPath" value="/purchase/update-purchase.jsp"/>
 </liferay-portlet:renderURL>
@@ -45,7 +34,9 @@
     </a>
 </div>
 
-<liferay-ui:search-container emptyResultsMessage="purchases-not-found" iteratorURL="<%= purchaseItrUrl %>">
+<liferay-ui:search-container emptyResultsMessage="purchases-not-found"
+                             iteratorURL="<%= iteratorURL %>"
+                             total="<%= PurchaseLocalServiceUtil.getPurchasesCount()%>">
     <liferay-ui:search-container-results>
     <%
         String sortByType = ParamUtil.getString(request, "orderByType");
@@ -88,3 +79,6 @@
     </liferay-ui:search-container-row>
     <liferay-ui:search-iterator />
 </liferay-ui:search-container>
+
+<aui:script use="liferay-search-container">
+</aui:script>

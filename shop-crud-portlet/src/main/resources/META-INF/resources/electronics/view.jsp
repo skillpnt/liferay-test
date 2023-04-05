@@ -14,11 +14,9 @@
 <liferay-ui:error key="electronicsDoesNotExist" message="electronics-does-not-exist" />
 <portlet:defineObjects />
 
-<%
-    PortletURL electronicsItrUrl = renderResponse.createRenderURL();
-    electronicsItrUrl.setParameter("mvcPath", "/electronics/view.jsp");
-%>
-
+<liferay-portlet:renderURL varImpl="iteratorURL" >
+    <liferay-portlet:param name="mvcPath" value="/electronics/view.jsp"/>
+</liferay-portlet:renderURL>
 <liferay-portlet:renderURL var="addElectronicsRenderURL" >
     <liferay-portlet:param name="mvcPath" value="/electronics/update-electronics.jsp"/>
 </liferay-portlet:renderURL>
@@ -30,14 +28,13 @@
     </a>
 </div>
 
-<liferay-ui:search-container emptyResultsMessage="electronics-not-found" iteratorURL="<%= electronicsItrUrl %>" >
+<liferay-ui:search-container emptyResultsMessage="electronics-not-found"
+                             iteratorURL="<%= iteratorURL %>"
+                             total="<%= ElectronicsLocalServiceUtil.getElectronicsesCount()%>">
     <liferay-ui:search-container-results results="<%= ElectronicsLocalServiceUtil.getElectronicses(searchContainer.getStart(), searchContainer.getEnd()) %>" >
     </liferay-ui:search-container-results>
 
     <liferay-ui:search-container-row className="shop.model.Electronics" modelVar="electronics" keyProperty="electronicsId" >
-        <portlet:renderURL var="rowURL">
-            <portlet:param name="electronicsId" value="${electronics.electronicsId}" />
-        </portlet:renderURL>
         <portlet:renderURL var="updateElectronicsRenderURL">
             <portlet:param name="mvcPath" value="/electronics/update-electronics.jsp"/>
             <portlet:param name="id" value="${electronics.electronicsId}"/>
@@ -54,7 +51,7 @@
                 typeName = "Error";
             }
         %>
-        <liferay-ui:search-container-column-text property="name" name="Electronics Name" href="${rowURL}"/>
+        <liferay-ui:search-container-column-text property="name" name="Electronics Name"/>
         <liferay-ui:search-container-column-text value="<%= typeName %>" name="Type"/>
         <liferay-ui:search-container-column-text property="price" name="Price"/>
         <liferay-ui:search-container-column-text property="count" name="Count"/>
@@ -73,3 +70,6 @@
     </liferay-ui:search-container-row>
     <liferay-ui:search-iterator />
 </liferay-ui:search-container>
+
+<aui:script use="liferay-search-container">
+</aui:script>

@@ -1,4 +1,7 @@
 <%@ include file="init.jsp" %>
+<liferay-ui:error key="fileUploadError" message="file-upload-error" />
+<liferay-ui:error key="fileWrongFormat" message="file-wrong-format" />
+<liferay-ui:error key="errorReadingZip" />
 <portlet:defineObjects />
 
 

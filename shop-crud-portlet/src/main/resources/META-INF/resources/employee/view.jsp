@@ -15,11 +15,10 @@
 <liferay-ui:error key="lastnameTooLong" message="employee-lastname-too-long" />
 <liferay-ui:error key="patronymicTooLong" message="employee-patronymic-too-long" />
 
-<%
-    PortletURL employeeItrUrl = renderResponse.createRenderURL();
-    employeeItrUrl.setParameter("mvcPath", "/employee/view.jsp");
-%>
 
+<liferay-portlet:renderURL varImpl="iteratorURL" >
+    <liferay-portlet:param name="mvcPath" value="/employee/view.jsp"/>
+</liferay-portlet:renderURL>
 <liferay-portlet:renderURL var="addEmployeeRenderURL">
     <liferay-portlet:param name="mvcPath" value="/employee/update-employee.jsp"/>
 </liferay-portlet:renderURL>
@@ -31,7 +30,9 @@
     </a>
 </div>
 
-<liferay-ui:search-container emptyResultsMessage="employees-not-found" iteratorURL="<%= employeeItrUrl %>" >
+<liferay-ui:search-container emptyResultsMessage="employees-not-found"
+                             iteratorURL="<%= iteratorURL %>"
+                             total="<%= EmployeeLocalServiceUtil.getEmployeesCount()%>">
     <liferay-ui:search-container-results results="<%= EmployeeLocalServiceUtil.getEmployees(searchContainer.getStart(), searchContainer.getEnd()) %>" >
     </liferay-ui:search-container-results>
 
@@ -78,3 +79,6 @@
     </liferay-ui:search-container-row>
     <liferay-ui:search-iterator />
 </liferay-ui:search-container>
+
+<aui:script use="liferay-search-container">
+</aui:script>
