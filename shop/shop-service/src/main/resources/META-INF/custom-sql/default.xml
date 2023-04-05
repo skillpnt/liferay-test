@@ -1,0 +1,84 @@
+<custom-sql>
+    <sql id="shop.service.persistence.EmployeeFinder.findByEarnings">
+        <![CDATA[
+                SELECT DISTINCT ON (p.name)
+                e.*,
+                SUM(el.price) AS earnings
+                FROM shop_positiontype p
+                JOIN shop_employee e ON p.positionid = e.positionid
+                JOIN shop_purchase pu ON e.employeeid = pu.employeeid
+                JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
+                GROUP BY p.name, e.employeeid
+                ORDER BY p.name, earnings DESC
+        ]]>
+    </sql>
+
+    <sql id="shop.service.persistence.EmployeeFinder.findByPurchasesCount">
+        <![CDATA[
+                SELECT DISTINCT ON (p.name)
+                e.*,
+                COUNT(DISTINCT pu.purchaseid) AS counter
+                FROM shop_positiontype p
+                JOIN shop_employee e ON p.positionid = e.positionid
+                JOIN shop_purchase pu ON e.employeeid = pu.employeeid
+                JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
+                GROUP BY p.name, e.employeeid
+                ORDER BY p.name, counter DESC
+        ]]>
+    </sql>
+
+    <sql id="shop.service.persistence.PurchaseFinder.getLastMonthProfit">
+        <![CDATA[
+                SELECT
+                SUM(el.price) AS profit
+                FROM shop_purchase pu
+                JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
+                WHERE pu.purchasedate >= CURRENT_DATE - INTERVAL '30 days'
+        ]]>
+    </sql>
+
+    <sql id="shop.service.persistence.PurchaseFinder.getLastMonthSoldTvCount">
+        <![CDATA[
+                SELECT
+                COUNT(el.electronicsid) AS tv_count
+                FROM shop_purchase pu
+                JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
+                JOIN shop_electronicstype et ON el.typeid = et.electronicstypeid
+                WHERE pu.purchasedate >= CURRENT_DATE - INTERVAL '30 days' AND et.name='TV'
+        ]]>
+    </sql>
+
+    <sql id="shop.service.persistence.EmployeeFinder.getEmployeesThatSellTvAndSmartphones">
+        <![CDATA[
+                SELECT
+                  e.*,
+                  COUNT(DISTINCT pu.purchaseid) AS counter
+                FROM
+                  shop_employee e
+                  JOIN shop_purchase pu ON e.employeeid = pu.employeeid
+                  JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
+                  JOIN shop_electronicstype et ON el.typeid = et.electronicstypeid
+                WHERE
+                  e.employeeid IN (
+                    SELECT
+                      pu.employeeid
+                    FROM
+                      shop_purchase pu
+                      JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
+                      JOIN shop_electronicstype et ON el.typeid = et.electronicstypeid
+                    WHERE et.name = 'TV'
+                  )
+                  AND e.employeeid IN (
+                    SELECT
+                      pu.employeeid
+                    FROM
+                      shop_purchase pu
+                      JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
+                      JOIN shop_electronicstype et ON el.typeid = et.electronicstypeid
+                    WHERE et.name = 'Smartphones'
+                  )
+                GROUP BY e.employeeid
+                ORDER BY counter ASC
+        ]]>
+    </sql>
+</custom-sql>

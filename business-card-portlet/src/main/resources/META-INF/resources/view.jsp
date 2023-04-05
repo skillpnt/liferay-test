@@ -5,68 +5,83 @@
 <%@ page import="shop.service.PositionTypeLocalServiceUtil" %>
 <%@ page import="java.util.List" %>
 <%@ page import="shop.service.EmployeeLocalServiceUtil" %>
+<%@ page import="com.liferay.portal.kernel.util.Validator" %>
+<%@ page import="com.liferay.portal.kernel.exception.PortalException" %>
 <%@ include file="init.jsp" %>
 <portlet:defineObjects/>
 <%
-	Map<Long, Employee> bestEmployees = new HashMap<>((Map) renderRequest.getAttribute("bestEmployees"));
-	Map<Long, Long> employeesEarnings = new HashMap<>((Map) renderRequest.getAttribute("employeesEarnings"));
-
-	Map<Long, Employee> bestEmployeesByCount = new HashMap<>((Map) renderRequest.getAttribute("bestEmployeesByCount"));
-	Map<Long, Integer> bestEmployeesCount = new HashMap<>((Map) renderRequest.getAttribute("bestEmployeesCount"));
-	long shopProfit = (Long) renderRequest.getAttribute("shopProfit");
-	int soldTvsCount = (Integer) renderRequest.getAttribute("soldTvsCount");
-	Map<Long, Integer> sortedTvSmartphoneMap = new HashMap<>((Map) renderRequest.getAttribute("sortedTvSmartphoneMap"));
+	List<Employee> bestEmployeesByEarnings = (List<Employee>)renderRequest.getAttribute("bestEmployeesByEarnings");
+	List<Employee> bestEmployeesByPurchaseCount = (List<Employee>)renderRequest.getAttribute("bestEmployeesByPurchaseCount");
+	List<Employee> employeesThatSellTvAndSmartphones = (List<Employee>)renderRequest.getAttribute("employeesThatSellTvAndSmartphones");
+	long profit = (Long)renderRequest.getAttribute("shopLastMonthProfit");
+	int tvsSold = (Integer)renderRequest.getAttribute("lastMonthSoldTvCount");
 %>
 
+<% if (Validator.isNotNull(bestEmployeesByEarnings)) { %>
 <p> Best employees
-	<ul id="bestEmployeesList" class="list-group">
-		<% for (Map.Entry<Long, Employee> employee : bestEmployees.entrySet()) { %>
-			<li class="list-group-item"><%= "Best '"
-					+ PositionTypeLocalServiceUtil.getPositionType(employee.getKey()).getName()
-					+ "' is "
-					+ employee.getValue().getFirstName()
-					+ " "
-					+ employee.getValue().getLastName()
-					+ "! They earned "
-					+ employeesEarnings.get(employee.getValue().getEmployeeId())/100
-					+ " Roubles!"%></li>
-		<% } %>
-	</ul>
-</p>
-<p> Best employees by purchases count
 	<ul class="list-group">
-		<% for (Map.Entry<Long, Employee> employee : bestEmployeesByCount.entrySet()) { %>
-		<li class="list-group-item"><%= "Best '"
-				+ PositionTypeLocalServiceUtil.getPositionType(employee.getKey()).getName()
-				+ "' by purchases count is "
-				+ employee.getValue().getFirstName()
-				+ " "
-				+ employee.getValue().getLastName()
-				+ "! They sold "
-				+ bestEmployeesCount.get(employee.getValue().getEmployeeId())
-				+ " products!"%></li>
+		<% for (Employee employee : bestEmployeesByEarnings) {
+			String posName = "";
+			try {
+				posName = PositionTypeLocalServiceUtil.getPositionType(employee.getPositionId()).getName();
+			} catch (PortalException e) {
+				posName = "Error!";
+			}
+		%>
+			<li class="list-group-item"><%= "Best earning '"
+					+ posName
+					+ "' is "
+					+ employee.getFirstName()
+					+ " "
+					+ employee.getLastName()%></li>
 		<% } %>
 	</ul>
 </p>
+<% } %>
 
-<p>
-	<%= "Shop profit: " + shopProfit/100 + " Roubles" %>
-</p>
-
-<p>
-	<%= "TVs sold this month: " + soldTvsCount %>
-</p>
-
-<p> Employees that sell TVs and Smartphones:
-<ul id="tvSmartphonesEmployees" class="list-group">
-	<% for (Map.Entry<Long, Integer> employee : sortedTvSmartphoneMap.entrySet()) { %>
-	<li class="list-group-item"><%=
-	EmployeeLocalServiceUtil.getEmployee(employee.getKey()).getFirstName()
+<% if (Validator.isNotNull(bestEmployeesByPurchaseCount)) { %>
+<p> Best employees by purchase count
+<ul class="list-group">
+	<% for (Employee employee : bestEmployeesByPurchaseCount) {
+		String posName = "";
+		try {
+			posName = PositionTypeLocalServiceUtil.getPositionType(employee.getPositionId()).getName();
+		} catch (PortalException e) {
+			posName = "Error!";
+		}
+	%>
+	<li class="list-group-item"><%= "Best selling '"
+			+ posName
+			+ "' is "
+			+ employee.getFirstName()
 			+ " "
-			+ EmployeeLocalServiceUtil.getEmployee(employee.getKey()).getLastName()
-			+ " sold "
-			+ employee.getValue()
-			+ " Products!"%></li>
+			+ employee.getLastName()%></li>
 	<% } %>
 </ul>
 </p>
+<% } %>
+
+<p>
+	Shop profit from last month: <%=profit/100%> Roubles.
+</p>
+<p>
+	TVs sold last month: <%= tvsSold %>
+</p>
+
+<% if(Validator.isNotNull(employeesThatSellTvAndSmartphones)) { %>
+<p> Employees that sell TV and Smartphones:
+<ul class="list-group">
+	<% for (Employee employee : employeesThatSellTvAndSmartphones) {
+		String posName = "";
+	%>
+	<li class="list-group-item"><%=
+			employee.getFirstName()
+			+ " "
+			+ employee.getLastName()
+			+ " "
+			+ employee.getPatronymic()
+	%></li>
+	<% } %>
+</ul>
+</p>
+<% } %>

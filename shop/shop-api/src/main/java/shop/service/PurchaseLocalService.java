@@ -199,6 +199,12 @@ public interface PurchaseLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public long getLastMonthProfit();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getLastMonthSoldTvCount();
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

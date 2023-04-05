@@ -43,139 +43,24 @@ public class BusinessCardPortlet extends MVCPortlet {
 	EmployeeLocalService employeeLocalService;
 	@Reference
 	PurchaseLocalService purchaseLocalService;
-	@Reference
-	ElectronicsLocalService electronicsLocalService;
-	@Reference
-	PositionTypeLocalService positionTypeLocalService;
-	@Reference
-	ElectronicsTypeLocalService electronicsTypeLocalService;
-	@Reference
-	ElectronicsEmployeeLocalService electronicsEmployeeLocalService;
-
-	public void getBestEmployees(RenderRequest renderRequest) {
-		List<Employee> employees = employeeLocalService.getEmployees(-1, -1);
-		List<Purchase> purchases = purchaseLocalService.getPurchases(-1, -1);
-
-		Map<Long, Long> employeesEarnings = new HashMap<>();
-		Map<Long, Employee> bestEmployees = new HashMap<>();
-
-		Map<Long, Integer> employeesPurchasesCount = new HashMap<>();
-		Map<Long, Employee> bestEmployeesByPurchasesCount = new HashMap<>();
-
-		employees.forEach(employee -> {
-			long sum = purchases.stream()
-					.filter(item -> item.getEmployeeId() == employee.getEmployeeId())
-					.mapToLong(item -> {
-						try {
-							return electronicsLocalService.getElectronics(item.getElectronicsId()).getPrice();
-						} catch (PortalException e) {
-							throw new RuntimeException(e);
-						}
-					})
-					.sum();
-
-			List<Purchase> employeePurchases = purchases.stream()
-					.filter(purchase -> purchase.getEmployeeId() == employee.getEmployeeId())
-					.collect(Collectors.toList());
-
-			int totalPurchases = employeePurchases.size();
-			employeesPurchasesCount.merge(employee.getEmployeeId(), totalPurchases, Integer::sum);
-
-			employeesEarnings.put(employee.getEmployeeId(), sum);
-
-			if (!bestEmployees.containsKey(employee.getPositionId())) {
-				bestEmployees.put(employee.getPositionId(), employee);
-			} else {
-				if (employeesEarnings.get(employee.getEmployeeId()) >
-						employeesEarnings.get(bestEmployees.get(employee.getPositionId()).getEmployeeId()))
-					bestEmployees.put(employee.getPositionId(), employee);
-			}
-
-			if (!bestEmployeesByPurchasesCount.containsKey(employee.getEmployeeId())) {
-				bestEmployeesByPurchasesCount.put(employee.getPositionId(), employee);
-			} else {
-				if (employeesPurchasesCount.get(employee.getEmployeeId()) >=
-						employeesPurchasesCount.get(bestEmployeesByPurchasesCount.get(employee.getEmployeeId()))) {
-					bestEmployeesByPurchasesCount.put(employee.getPositionId(), employee);
-				}
-			}
-		});
-
-		renderRequest.setAttribute("bestEmployees", bestEmployees);
-		renderRequest.setAttribute("employeesEarnings", employeesEarnings);
-
-		renderRequest.setAttribute("bestEmployeesByCount", bestEmployeesByPurchasesCount);
-		renderRequest.setAttribute("bestEmployeesCount", employeesPurchasesCount);
-		getShopProfit(renderRequest, employeesEarnings);
-	}
-
-	public void getShopProfit(RenderRequest renderRequest, Map<Long, Long> employeesEarnings) {
-		long sum = employeesEarnings.values().stream().mapToLong(Long::longValue).sum();
-		renderRequest.setAttribute("shopProfit", sum);
-	}
-
-	public void getSoldTvsCount(RenderRequest renderRequest) {
-		ElectronicsType tvType = electronicsTypeLocalService.getElectronicsTypes(-1, -1).stream()
-				.filter(type -> type.getName().equals("TV"))
-				.findAny()
-				.orElse(null);
-
-		if (Validator.isNotNull(tvType)) {
-			List<Long> tvIds = electronicsLocalService.getElectronicses(-1, -1).stream()
-					.filter(electronic -> electronic.getTypeId() == tvType.getElectronicsTypeId())
-					.map(Electronics::getElectronicsId)
-					.collect(Collectors.toList());
-
-			int soldTvsCount = (int) purchaseLocalService.getPurchases(-1, -1).stream()
-					.filter(purchase -> tvIds.contains(purchase.getElectronicsId()) &&
-							purchase.getPurchaseDate().after(Date.from(ZonedDateTime.now().minusMonths(1).toInstant())))
-					.count();
-
-			renderRequest.setAttribute("soldTvsCount", soldTvsCount);
-		} else {
-			SessionErrors.add(renderRequest, "error");
-		}
-	}
-
-	public void getEmployeesTvSmartphonesByOrderByCountAsc(RenderRequest renderRequest) {
-		List<Long> tvSmartphonesTypesIds = electronicsTypeLocalService.getElectronicsTypes(-1, -1).stream()
-				.filter(type -> type.getName().equals("TV") || type.getName().equals("Smartphones"))
-				.map(ElectronicsType::getElectronicsTypeId)
-				.collect(Collectors.toList());
-
-		List<Long> tvSmartphonesEmployees = electronicsEmployeeLocalService.getElectronicsEmployees(-1, -1).stream()
-				.filter(ee -> ee.getElectronicsTypeId() == tvSmartphonesTypesIds.get(0) ||
-						ee.getElectronicsTypeId() == tvSmartphonesTypesIds.get(1))
-				.map(ElectronicsEmployee::getEmployeeId)
-				.distinct()
-				.collect(Collectors.toList());
-
-		List<Purchase> purchases = purchaseLocalService.getPurchases(-1, -1);
-		Map<Long, Integer> tvSmartphonesPurchases = new HashMap<>();
-
-		for (long employeeId : tvSmartphonesEmployees) {
-
-			List<Purchase> employeePurchases = purchases.stream()
-					.filter(purchase -> purchase.getEmployeeId() == employeeId)
-					.collect(Collectors.toList());
-
-			int totalPurchases = employeePurchases.size();
-
-			tvSmartphonesPurchases.merge(employeeId, totalPurchases, Integer::sum);
-		}
-
-		Map<Long, Integer> sortedMap = tvSmartphonesPurchases.entrySet().stream()
-				.sorted(Map.Entry.comparingByValue())
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-
-		renderRequest.setAttribute("sortedTvSmartphoneMap", sortedMap);
-	}
 
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-		getBestEmployees(renderRequest);
-		getSoldTvsCount(renderRequest);
-		getEmployeesTvSmartphonesByOrderByCountAsc(renderRequest);
+
+		List<Employee> bestEmployeesList = employeeLocalService.findByEarnings();
+		renderRequest.setAttribute("bestEmployeesByEarnings", bestEmployeesList);
+
+		List<Employee> bestEmployeesByPurchaseCount = employeeLocalService.findByPurchasesCount();
+		renderRequest.setAttribute("bestEmployeesByPurchaseCount", bestEmployeesByPurchaseCount);
+
+		long profit = purchaseLocalService.getLastMonthProfit();
+		renderRequest.setAttribute("shopLastMonthProfit", profit);
+
+		int tvsSold = purchaseLocalService.getLastMonthSoldTvCount();
+		renderRequest.setAttribute("lastMonthSoldTvCount", tvsSold);
+
+		List<Employee> employeesThatSellTvAndSmartphones = employeeLocalService.getEmployeesThatSellTvAndSmartphones();
+		renderRequest.setAttribute("employeesThatSellTvAndSmartphones", employeesThatSellTvAndSmartphones);
 		super.doView(renderRequest, renderResponse);
 	}
 }

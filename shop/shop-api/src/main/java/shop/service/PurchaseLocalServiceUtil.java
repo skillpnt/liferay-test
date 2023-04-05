@@ -214,6 +214,14 @@ public class PurchaseLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static long getLastMonthProfit() {
+		return getService().getLastMonthProfit();
+	}
+
+	public static int getLastMonthSoldTvCount() {
+		return getService().getLastMonthSoldTvCount();
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

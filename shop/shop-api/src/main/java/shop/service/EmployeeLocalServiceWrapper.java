@@ -209,6 +209,16 @@ public class EmployeeLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<shop.model.Employee> findByEarnings() {
+		return _employeeLocalService.findByEarnings();
+	}
+
+	@Override
+	public java.util.List<shop.model.Employee> findByPurchasesCount() {
+		return _employeeLocalService.findByPurchasesCount();
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -255,6 +265,13 @@ public class EmployeeLocalServiceWrapper
 	@Override
 	public int getEmployeesCount() {
 		return _employeeLocalService.getEmployeesCount();
+	}
+
+	@Override
+	public java.util.List<shop.model.Employee>
+		getEmployeesThatSellTvAndSmartphones() {
+
+		return _employeeLocalService.getEmployeesThatSellTvAndSmartphones();
 	}
 
 	@Override

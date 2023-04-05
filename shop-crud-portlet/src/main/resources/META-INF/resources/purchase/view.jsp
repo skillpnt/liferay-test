@@ -9,6 +9,11 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.liferay.portal.kernel.util.ListUtil" %>
 <%@ page import="shop.crud.portlet.portlet.PurchaseDateComparator" %>
+<%@ page import="shop.model.ElectronicsEmployee" %>
+<%@ page import="shop.service.ElectronicsLocalServiceUtil" %>
+<%@ page import="com.liferay.portal.kernel.exception.PortalException" %>
+<%@ page import="shop.service.EmployeeLocalServiceUtil" %>
+<%@ page import="shop.model.Employee" %>
 <%@ include file="../init.jsp" %>
 <portlet:defineObjects />
 <theme:defineObjects />
@@ -63,8 +68,26 @@
             <portlet:param name="id" value="${purchase.purchaseId}"/>
         </portlet:actionURL>
 
+        <%
+            String electronicsName = "";
+            String employeeName = "";
+            try {
+                electronicsName = ElectronicsLocalServiceUtil.getElectronics(purchase.getElectronicsId()).getName();
+            } catch (PortalException e) {
+                electronicsName = "Error";
+            }
+
+            try {
+                Employee employee = EmployeeLocalServiceUtil.getEmployee(purchase.getEmployeeId());
+                employeeName = employee.getFirstName() + " " + employee.getLastName();
+            } catch (PortalException e) {
+                electronicsName = "Error";
+            }
+        %>
         <liferay-ui:search-container-column-text property="electronicsId" name="Electronics Id"/>
+        <liferay-ui:search-container-column-text value="<%= electronicsName %>" name="Electronics Name"/>
         <liferay-ui:search-container-column-text property="employeeId" name="Employee Id"/>
+        <liferay-ui:search-container-column-text value="<%= employeeName %>" name="Employee Name"/>
         <liferay-ui:search-container-column-date property="purchaseDate" name="Purchase Date" orderable="<%= true %>" orderableProperty="purchaseDate" />
         <liferay-ui:search-container-column-text property="purchaseTypeId" name="Purchase Type Id"/>
 

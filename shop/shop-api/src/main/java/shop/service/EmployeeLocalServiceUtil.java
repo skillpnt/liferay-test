@@ -201,6 +201,14 @@ public class EmployeeLocalServiceUtil {
 		return getService().fetchEmployee(employeeId);
 	}
 
+	public static List<Employee> findByEarnings() {
+		return getService().findByEarnings();
+	}
+
+	public static List<Employee> findByPurchasesCount() {
+		return getService().findByPurchasesCount();
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -240,6 +248,10 @@ public class EmployeeLocalServiceUtil {
 	 */
 	public static int getEmployeesCount() {
 		return getService().getEmployeesCount();
+	}
+
+	public static List<Employee> getEmployeesThatSellTvAndSmartphones() {
+		return getService().getEmployeesThatSellTvAndSmartphones();
 	}
 
 	public static

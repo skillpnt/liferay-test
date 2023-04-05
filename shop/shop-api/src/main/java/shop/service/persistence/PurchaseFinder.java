@@ -12,28 +12,19 @@
  * details.
  */
 
-package shop.service.impl;
+package shop.service.persistence;
 
-import com.liferay.portal.aop.AopService;
-
-import org.osgi.service.component.annotations.Component;
-
-import shop.service.base.PurchaseLocalServiceBaseImpl;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * @author Brian Wing Shun Chan
+ * @generated
  */
-@Component(
-	property = "model.class.name=shop.model.Purchase",
-	service = AopService.class
-)
-public class PurchaseLocalServiceImpl extends PurchaseLocalServiceBaseImpl {
+@ProviderType
+public interface PurchaseFinder {
 
-	public long getLastMonthProfit() {
-		return purchaseFinder.getLastMonthProfit();
-	}
+	public long getLastMonthProfit();
 
-	public int getLastMonthSoldTvCount() {
-		return purchaseFinder.getLastMonthSoldTvCount();
-	}
+	public int getLastMonthSoldTvCount();
+
 }

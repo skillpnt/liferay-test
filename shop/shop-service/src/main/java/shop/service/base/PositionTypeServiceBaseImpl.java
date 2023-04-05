@@ -40,8 +40,10 @@ import shop.service.PositionTypeServiceUtil;
 import shop.service.persistence.ElectronicsEmployeePersistence;
 import shop.service.persistence.ElectronicsPersistence;
 import shop.service.persistence.ElectronicsTypePersistence;
+import shop.service.persistence.EmployeeFinder;
 import shop.service.persistence.EmployeePersistence;
 import shop.service.persistence.PositionTypePersistence;
+import shop.service.persistence.PurchaseFinder;
 import shop.service.persistence.PurchasePersistence;
 import shop.service.persistence.purchaseTypePersistence;
 
@@ -155,6 +157,9 @@ public abstract class PositionTypeServiceBaseImpl
 	protected EmployeePersistence employeePersistence;
 
 	@Reference
+	protected EmployeeFinder employeeFinder;
+
+	@Reference
 	protected shop.service.PositionTypeLocalService positionTypeLocalService;
 
 	protected PositionTypeService positionTypeService;
@@ -164,6 +169,9 @@ public abstract class PositionTypeServiceBaseImpl
 
 	@Reference
 	protected PurchasePersistence purchasePersistence;
+
+	@Reference
+	protected PurchaseFinder purchaseFinder;
 
 	@Reference
 	protected purchaseTypePersistence purchaseTypePersistence;

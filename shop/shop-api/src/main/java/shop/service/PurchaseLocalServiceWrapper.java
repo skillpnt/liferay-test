@@ -222,6 +222,16 @@ public class PurchaseLocalServiceWrapper
 		return _purchaseLocalService.getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public long getLastMonthProfit() {
+		return _purchaseLocalService.getLastMonthProfit();
+	}
+
+	@Override
+	public int getLastMonthSoldTvCount() {
+		return _purchaseLocalService.getLastMonthSoldTvCount();
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

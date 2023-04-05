@@ -18,7 +18,10 @@ import com.liferay.portal.aop.AopService;
 
 import org.osgi.service.component.annotations.Component;
 
+import shop.model.Employee;
 import shop.service.base.EmployeeLocalServiceBaseImpl;
+
+import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
@@ -28,4 +31,16 @@ import shop.service.base.EmployeeLocalServiceBaseImpl;
 	service = AopService.class
 )
 public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
+
+	public List<Employee> findByEarnings() {
+		return employeeFinder.findByEarnings();
+	}
+
+	public List<Employee> findByPurchasesCount() {
+		return employeeFinder.findByPurchasesCount();
+	}
+
+	public List<Employee> getEmployeesThatSellTvAndSmartphones() {
+		return employeeFinder.getEmployeesThatSellTvAndSmartphones();
+	}
 }
