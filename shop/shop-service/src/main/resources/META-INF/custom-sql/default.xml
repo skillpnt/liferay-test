@@ -66,7 +66,7 @@
                       shop_purchase pu
                       JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
                       JOIN shop_electronicstype et ON el.typeid = et.electronicstypeid
-                    WHERE et.name = 'TV'
+                    WHERE et.name = 'TV' OR et.name = 'TVs' OR et.name = 'Телевизоры'
                   )
                   AND e.employeeid IN (
                     SELECT
@@ -75,7 +75,7 @@
                       shop_purchase pu
                       JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
                       JOIN shop_electronicstype et ON el.typeid = et.electronicstypeid
-                    WHERE et.name = 'Smartphones'
+                    WHERE et.name = 'Smartphones' OR et.name = 'Смартфоны'
                   )
                 GROUP BY e.employeeid
                 ORDER BY counter ASC

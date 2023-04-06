@@ -17,7 +17,7 @@
 	int tvsSold = (Integer)renderRequest.getAttribute("lastMonthSoldTvCount");
 %>
 
-<% if (Validator.isNotNull(bestEmployeesByEarnings)) { %>
+<% if (!bestEmployeesByEarnings.isEmpty()) { %>
 <p> Best employees
 	<ul class="list-group">
 		<% for (Employee employee : bestEmployeesByEarnings) {
@@ -39,7 +39,8 @@
 </p>
 <% } %>
 
-<% if (Validator.isNotNull(bestEmployeesByPurchaseCount)) { %>
+
+<% if (!bestEmployeesByPurchaseCount.isEmpty()) { %>
 <p> Best employees by purchase count
 <ul class="list-group">
 	<% for (Employee employee : bestEmployeesByPurchaseCount) {
@@ -68,7 +69,7 @@
 	TVs sold last month: <%= tvsSold %>
 </p>
 
-<% if(Validator.isNotNull(employeesThatSellTvAndSmartphones)) { %>
+<% if(!employeesThatSellTvAndSmartphones.isEmpty()) { %>
 <p> Employees that sell TV and Smartphones:
 <ul class="list-group">
 	<% for (Employee employee : employeesThatSellTvAndSmartphones) {
@@ -84,4 +85,6 @@
 	<% } %>
 </ul>
 </p>
+<% } else { %>
+<p>Cannot find employees that sell TVs and Smartphones!</p>
 <% } %>

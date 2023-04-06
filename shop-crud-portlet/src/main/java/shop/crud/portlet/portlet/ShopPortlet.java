@@ -150,102 +150,115 @@ public class ShopPortlet extends MVCPortlet {
 
 		Electronics electronics = null;
 
-		if (item.get("electronicsid") != null) {
-			electronics = electronicsLocalService.createElectronics(Long.parseLong(item.get("electronicsid")));
-		} else {
-			electronics = electronicsLocalService.createElectronics(CounterLocalServiceUtil.increment());
-		}
-
-		electronics.setName(item.get("name"));
-		electronics.setTypeId(Long.parseLong(item.get("typeid")));
-		electronics.setPrice(Long.parseLong(item.get("price")));
-		electronics.setCount(Integer.parseInt(item.get("count")));
-		electronics.setInStock(Boolean.parseBoolean(item.get("instock")));
-		electronics.setArchived(Boolean.parseBoolean(item.get("archived")));
-		electronics.setDescription(item.get("description"));
-
 		try {
+			electronics = electronicsLocalService.createElectronics(Long.parseLong(item.get("id")));
+
+			electronics.setName(item.get("name"));
+			electronics.setTypeId(Long.parseLong(item.get("etype")));
+			electronics.setPrice(Long.parseLong(item.get("price")));
+			electronics.setCount(Integer.parseInt(item.get("count")));
+			electronics.setInStock(Boolean.parseBoolean(item.get("inStock")));
+			electronics.setArchived(Boolean.parseBoolean(item.get("archive")));
+			electronics.setDescription(item.get("description"));
+
 			ElectronicsLocalServiceUtil.addElectronics(electronics);
-		} catch (Exception e) {
+		} catch (NumberFormatException en) {
+			SessionErrors.add(actionRequest, "errorParsingElectronics");
+		}  catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
 		}
 	}
 
 	public void addElectronicsEmployee(ActionRequest actionRequest, Map<String, String> item) {
-		ElectronicsEmployee electronicsEmployee = electronicsEmployeeLocalService.createElectronicsEmployee(
-				new ElectronicsEmployeePK(
-						Long.parseLong(item.get("employeeid")),
-						Long.parseLong(item.get("electronicstypeid"))));
 
 		try {
+			ElectronicsEmployee electronicsEmployee = electronicsEmployeeLocalService.createElectronicsEmployee(
+					new ElectronicsEmployeePK(
+							Long.parseLong(item.get("employeeId")),
+							Long.parseLong(item.get("etype"))));
+
 			ElectronicsEmployeeLocalServiceUtil.addElectronicsEmployee(electronicsEmployee);
+		} catch (NumberFormatException en) {
+			SessionErrors.add(actionRequest, "errorParsingElectronicsEmployee");
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
 		}
 	}
 
 	public void addElectronicsType(ActionRequest actionRequest, Map<String, String> item) {
-		ElectronicsType electronicsType = electronicsTypeLocalService.createElectronicsType(Long.parseLong(item.get("electronicstypeid")));
-		electronicsType.setName(item.get("name"));
 
 		try {
+			ElectronicsType electronicsType = electronicsTypeLocalService.createElectronicsType(Long.parseLong(item.get("id")));
+			electronicsType.setName(item.get("name"));
+
 			ElectronicsTypeLocalServiceUtil.addElectronicsType(electronicsType);
+		} catch (NumberFormatException en) {
+			SessionErrors.add(actionRequest, "errorParsingElectronicsType");
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
 		}
 	}
 
 	public void addEmployee(ActionRequest actionRequest, Map<String, String> item) {
-		Employee employee = employeeLocalService.createEmployee(Long.parseLong(item.get("employeeid")));
-
-		employee.setLastName(item.get("lastname"));
-		employee.setFirstName(item.get("firstname"));
-		employee.setPatronymic(item.get("patronymic"));
-		LocalDate date = LocalDate.parse(item.get("birthdate"));
-		employee.setBirthdate(java.sql.Date.valueOf(date));
-		employee.setPositionId(Long.parseLong(item.get("positionid")));
-		employee.setGender(Boolean.getBoolean(item.get("gender")));
 
 		try {
+			Employee employee = employeeLocalService.createEmployee(Long.parseLong(item.get("id")));
+
+			employee.setLastName(item.get("lastname"));
+			employee.setFirstName(item.get("firstname"));
+			employee.setPatronymic(item.get("patronymic"));
+			LocalDate date = LocalDate.parse(item.get("birthdate"));
+			employee.setBirthdate(java.sql.Date.valueOf(date));
+			employee.setPositionId(Long.parseLong(item.get("position")));
+			employee.setGender(Boolean.parseBoolean(item.get("gender")));
+
 			EmployeeLocalServiceUtil.addEmployee(employee);
+		} catch (NumberFormatException en) {
+			SessionErrors.add(actionRequest, "errorParsingEmployee");
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
 		}
 	}
 
 	public void addPositionType(ActionRequest actionRequest, Map<String, String> item) {
-		PositionType positionType = positionTypeLocalService.createPositionType(Long.parseLong(item.get("positionid")));
-		positionType.setName(item.get("name"));
-
 		try {
+			PositionType positionType = positionTypeLocalService.createPositionType(Long.parseLong(item.get("id")));
+			positionType.setName(item.get("name"));
+
 			PositionTypeLocalServiceUtil.addPositionType(positionType);
+		} catch (NumberFormatException en) {
+			SessionErrors.add(actionRequest, "errorParsingPositionType");
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
 		}
 	}
 
 	public void addPurchase(ActionRequest actionRequest, Map<String, String> item) {
-		Purchase purchase = purchaseLocalService.createPurchase(Long.parseLong(item.get("purchaseid")));
-
-		purchase.setElectronicsId(Long.parseLong(item.get("electronicsid")));
-		purchase.setEmployeeId(Long.parseLong(item.get("employeeid")));
-		Timestamp date = Timestamp.valueOf(item.get("purchasedate"));
-		purchase.setPurchaseDate(date);
-		purchase.setPurchaseTypeId(Long.parseLong(item.get("purchasetypeid")));
-
 		try {
+			Purchase purchase = purchaseLocalService.createPurchase(Long.parseLong(item.get("id")));
+
+			purchase.setElectronicsId(Long.parseLong(item.get("electroId")));
+			purchase.setEmployeeId(Long.parseLong(item.get("employeeId")));
+			Timestamp date = Timestamp.valueOf(item.get("purchaseDate"));
+			purchase.setPurchaseDate(date);
+			purchase.setPurchaseTypeId(Long.parseLong(item.get("type")));
+
 			PurchaseLocalServiceUtil.addPurchase(purchase);
+		} catch (NumberFormatException en) {
+			SessionErrors.add(actionRequest, "errorParsingPurchase");
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
 		}
 	}
 
 	public void addPurchaseType(ActionRequest actionRequest, Map<String, String> item) {
-		purchaseType pType = purchaseTypeLocalService.createpurchaseType(Long.parseLong(item.get("purchasetypeid")));
-		pType.setName(item.get("name"));
-
 		try {
+			purchaseType pType = purchaseTypeLocalService.createpurchaseType(Long.parseLong(item.get("id")));
+			pType.setName(item.get("name"));
+
 			purchaseTypeLocalServiceUtil.addpurchaseType(pType);
+		} catch (NumberFormatException en) {
+			SessionErrors.add(actionRequest, "errorParsingPurchaseType");
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
 		}
