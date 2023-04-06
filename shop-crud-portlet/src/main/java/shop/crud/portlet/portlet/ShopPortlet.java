@@ -17,7 +17,9 @@ import shop.service.*;
 import shop.service.persistence.ElectronicsEmployeePK;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -81,7 +83,7 @@ public class ShopPortlet extends MVCPortlet {
 			 ZipInputStream stream = new ZipInputStream(bis)) {
 
 			ZipEntry entry;
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "CP1251"));
 
 			while ((entry = stream.getNextEntry()) != null) {
 
@@ -93,7 +95,7 @@ public class ShopPortlet extends MVCPortlet {
 					String[] headers = null;
 					String line;
 					while ((line = reader.readLine()) != null) {
-						String[] values = line.split(",");
+						String[] values = line.split(";");
 						if (headers == null) {
 							headers = values;
 						} else {
@@ -106,31 +108,31 @@ public class ShopPortlet extends MVCPortlet {
 					}
 
 					switch (fileName) {
-						case "shop_electronics.csv": {
+						case "Electronics.csv": {
 							records.forEach(item -> addElectronics(actionRequest, item));
 							break;
 						}
-						case "shop_electronicsemployee.csv": {
+						case "ElectroEmployee.csv": {
 							records.forEach(item -> addElectronicsEmployee(actionRequest, item));
 							break;
 						}
-						case "shop_electronicstype.csv": {
+						case "ElectroType.csv": {
 							records.forEach(item -> addElectronicsType(actionRequest, item));
 							break;
 						}
-						case "shop_employee.csv": {
+						case "Employee.csv": {
 							records.forEach(item -> addEmployee(actionRequest, item));
 							break;
 						}
-						case "shop_positiontype.csv": {
+						case "PositionType.csv": {
 							records.forEach(item -> addPositionType(actionRequest, item));
 							break;
 						}
-						case "shop_purchase.csv": {
+						case "Purchase.csv": {
 							records.forEach(item -> addPurchase(actionRequest, item));
 							break;
 						}
-						case "shop_purchasetype.csv": {
+						case "PurchaseType.csv": {
 							records.forEach(item -> addPurchaseType(actionRequest, item));
 							break;
 						}
@@ -157,15 +159,19 @@ public class ShopPortlet extends MVCPortlet {
 			electronics.setTypeId(Long.parseLong(item.get("etype")));
 			electronics.setPrice(Long.parseLong(item.get("price")));
 			electronics.setCount(Integer.parseInt(item.get("count")));
-			electronics.setInStock(Boolean.parseBoolean(item.get("inStock")));
-			electronics.setArchived(Boolean.parseBoolean(item.get("archive")));
+			boolean inStock = "1".equals(item.get("inStock"));
+			electronics.setInStock(inStock);
+			boolean archive = "1".equals(item.get("archive"));
+			electronics.setArchived(archive);
 			electronics.setDescription(item.get("description"));
 
 			ElectronicsLocalServiceUtil.addElectronics(electronics);
 		} catch (NumberFormatException en) {
 			SessionErrors.add(actionRequest, "errorParsingElectronics");
+			System.out.println(en.getMessage());
 		}  catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -180,8 +186,10 @@ public class ShopPortlet extends MVCPortlet {
 			ElectronicsEmployeeLocalServiceUtil.addElectronicsEmployee(electronicsEmployee);
 		} catch (NumberFormatException en) {
 			SessionErrors.add(actionRequest, "errorParsingElectronicsEmployee");
+			System.out.println(en.getMessage());
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -194,8 +202,10 @@ public class ShopPortlet extends MVCPortlet {
 			ElectronicsTypeLocalServiceUtil.addElectronicsType(electronicsType);
 		} catch (NumberFormatException en) {
 			SessionErrors.add(actionRequest, "errorParsingElectronicsType");
+			System.out.println(en.getMessage());
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -207,16 +217,20 @@ public class ShopPortlet extends MVCPortlet {
 			employee.setLastName(item.get("lastname"));
 			employee.setFirstName(item.get("firstname"));
 			employee.setPatronymic(item.get("patronymic"));
-			LocalDate date = LocalDate.parse(item.get("birthdate"));
-			employee.setBirthdate(java.sql.Date.valueOf(date));
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+			Date date = dateFormat.parse(item.get("birthdate"));
+			employee.setBirthdate(date);
 			employee.setPositionId(Long.parseLong(item.get("position")));
-			employee.setGender(Boolean.parseBoolean(item.get("gender")));
+			boolean gender = "1".equals(item.get("gender"));
+			employee.setGender(gender);
 
 			EmployeeLocalServiceUtil.addEmployee(employee);
 		} catch (NumberFormatException en) {
 			SessionErrors.add(actionRequest, "errorParsingEmployee");
+			System.out.println(en.getMessage());
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -228,8 +242,10 @@ public class ShopPortlet extends MVCPortlet {
 			PositionTypeLocalServiceUtil.addPositionType(positionType);
 		} catch (NumberFormatException en) {
 			SessionErrors.add(actionRequest, "errorParsingPositionType");
+			System.out.println(en.getMessage());
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -239,15 +255,18 @@ public class ShopPortlet extends MVCPortlet {
 
 			purchase.setElectronicsId(Long.parseLong(item.get("electroId")));
 			purchase.setEmployeeId(Long.parseLong(item.get("employeeId")));
-			Timestamp date = Timestamp.valueOf(item.get("purchaseDate"));
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+			Date date = dateFormat.parse(item.get("purchaseDate"));
 			purchase.setPurchaseDate(date);
 			purchase.setPurchaseTypeId(Long.parseLong(item.get("type")));
 
 			PurchaseLocalServiceUtil.addPurchase(purchase);
 		} catch (NumberFormatException en) {
 			SessionErrors.add(actionRequest, "errorParsingPurchase");
+			System.out.println(en.getMessage());
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -259,8 +278,10 @@ public class ShopPortlet extends MVCPortlet {
 			purchaseTypeLocalServiceUtil.addpurchaseType(pType);
 		} catch (NumberFormatException en) {
 			SessionErrors.add(actionRequest, "errorParsingPurchaseType");
+			System.out.println(en.getMessage());
 		} catch (Exception e) {
 			SessionErrors.add(actionRequest, e.getClass().getName());
+			System.out.println(e.getMessage());
 		}
 	}
 }

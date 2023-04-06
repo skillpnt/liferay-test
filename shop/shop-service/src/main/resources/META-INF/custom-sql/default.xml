@@ -30,7 +30,7 @@
     <sql id="shop.service.persistence.PurchaseFinder.getLastMonthProfit">
         <![CDATA[
                 SELECT
-                SUM(el.price) AS profit
+                COALESCE(SUM(el.price), 0) AS profit
                 FROM shop_purchase pu
                 JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
                 WHERE pu.purchasedate >= CURRENT_DATE - INTERVAL '30 days'
@@ -44,7 +44,7 @@
                 FROM shop_purchase pu
                 JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
                 JOIN shop_electronicstype et ON el.typeid = et.electronicstypeid
-                WHERE pu.purchasedate >= CURRENT_DATE - INTERVAL '30 days' AND et.name='TV'
+                WHERE pu.purchasedate >= CURRENT_DATE - INTERVAL '30 days' AND et.name='Телевизоры'
         ]]>
     </sql>
 
@@ -66,7 +66,7 @@
                       shop_purchase pu
                       JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
                       JOIN shop_electronicstype et ON el.typeid = et.electronicstypeid
-                    WHERE et.name = 'TV' OR et.name = 'TVs' OR et.name = 'Телевизоры'
+                    WHERE et.name = 'Телевизоры'
                   )
                   AND e.employeeid IN (
                     SELECT
@@ -75,7 +75,7 @@
                       shop_purchase pu
                       JOIN shop_electronics el ON pu.electronicsid = el.electronicsid
                       JOIN shop_electronicstype et ON el.typeid = et.electronicstypeid
-                    WHERE et.name = 'Smartphones' OR et.name = 'Смартфоны'
+                    WHERE et.name = 'Смартфоны'
                   )
                 GROUP BY e.employeeid
                 ORDER BY counter ASC

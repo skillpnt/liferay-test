@@ -40,6 +40,7 @@
     </aui:select>
     <aui:input name="price" required="true" min="100" type="number" value='<%= electronics.getPrice() %>'/>
     <aui:input name="count" required="true" type="number" value='<%= electronics.getCount() %>'/>
+    <aui:input name="inStock"  type="checkbox" value='<%= electronics.getInStock() %>'/>
     <aui:input name="archived" type="checkbox" value='<%= electronics.getArchived() %>'/>
     <aui:input name="description" required="true" maxlength="5000" type="text" value='<%= electronics.getDescription() %>'/>
     <aui:button-row>
@@ -63,6 +64,7 @@ ${message}
     </aui:select>
     <aui:input name="price" type="number" required="true" min="100" placeholder="Price"/>
     <aui:input name="count" type="number" required="true" placeholder="Count"/>
+    <aui:input name="inStock"  type="checkbox" label="In stock"/>
     <aui:input name="archived" type="checkbox" label="Archived"/>
     <aui:input name="description" type="text" required="true" maxlength="5000" placeholder="Description"/>
     <aui:button-row>

@@ -52,6 +52,7 @@ public class ElectronicsPortlet extends MVCPortlet {
         long typeId = ParamUtil.getLong(actionRequest, "typeId");
         long price = ParamUtil.getLong(actionRequest, "price");
         int count = ParamUtil.getInteger(actionRequest, "count");
+        boolean inStock = ParamUtil.getBoolean(actionRequest, "inStock");
         boolean archived = ParamUtil.getBoolean(actionRequest, "archived");
         String description = ParamUtil.getString(actionRequest, "description");
 
@@ -61,7 +62,7 @@ public class ElectronicsPortlet extends MVCPortlet {
         electronics.setTypeId(typeId);
         electronics.setPrice(price);
         electronics.setCount(count);
-        electronics.setInStock(count > 0);
+        electronics.setInStock(inStock);
         electronics.setArchived(archived);
         electronics.setDescription(description);
 
@@ -84,6 +85,7 @@ public class ElectronicsPortlet extends MVCPortlet {
         long typeId = ParamUtil.getLong(actionRequest, "typeId");
         long price = ParamUtil.getLong(actionRequest, "price");
         int count = ParamUtil.getInteger(actionRequest, "count");
+        boolean inStock = ParamUtil.getBoolean(actionRequest, "inStock");
         boolean archived = ParamUtil.getBoolean(actionRequest, "archived");
         String description = ParamUtil.getString(actionRequest, "description");
 
@@ -99,7 +101,7 @@ public class ElectronicsPortlet extends MVCPortlet {
             electronics.setTypeId(typeId);
             electronics.setPrice(price);
             electronics.setCount(count);
-            electronics.setInStock(count > 0);
+            electronics.setInStock(inStock);
             electronics.setArchived(archived);
             electronics.setDescription(description);
             try {

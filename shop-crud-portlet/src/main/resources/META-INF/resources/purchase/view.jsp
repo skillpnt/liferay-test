@@ -46,7 +46,7 @@
     <%
         String sortByType = ParamUtil.getString(request, "orderByType");
         List<Purchase> purchaseList = PurchaseLocalServiceUtil.getPurchases(-1, -1);
-        List<Purchase> sortableList = new ArrayList<>(ListUtil.subList(purchaseList, searchContainer.getStart(), searchContainer.getEnd()));
+        List<Purchase> sortableList = new ArrayList<>(purchaseList);
 
         if (sortByType.equalsIgnoreCase("asc")) {
             Collections.sort(sortableList, new PurchaseDateComparator());
@@ -55,7 +55,7 @@
         }
 
         results.clear();
-        results.addAll(sortableList);
+        results.addAll(ListUtil.subList(sortableList, searchContainer.getStart(), searchContainer.getEnd()));
     %>
     </liferay-ui:search-container-results>
 
